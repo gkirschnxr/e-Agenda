@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace e_Agenda.WebApp.Controllers
+namespace e_Agenda.WebApp.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
+    public IActionResult Index() {
+        return View();
     }
 }

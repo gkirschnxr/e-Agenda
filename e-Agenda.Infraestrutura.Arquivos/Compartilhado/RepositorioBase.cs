@@ -1,76 +1,68 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
 
-namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado
+namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
+
+public abstract class RepositorioBase<T> where T : EntidadeBase<T>
 {
-    public abstract class RepositorioBase<T> where T : EntidadeBase<T>
-    {
-        protected ContextoDados contexto;
-        protected List<T> registros = new List<T>();
+    protected ContextoDados contexto;
+    protected List<T> registros = new List<T>();
 
-        protected RepositorioBase(ContextoDados contexto)
-        {
-            this.contexto = contexto;
+    protected RepositorioBase(ContextoDados contexto) {
+        this.contexto = contexto;
 
-            registros = ObterRegistros();
-        }
+        registros = ObterRegistros();
+    }
 
-        protected abstract List<T> ObterRegistros();
+    protected abstract List<T> ObterRegistros();
 
-        public void CadastrarRegistro(T novoRegistro)
-        {
-            registros.Add(novoRegistro);
+    public void CadastrarRegistro(T novoRegistro) {
+        registros.Add(novoRegistro);
 
-            contexto.Salvar();
-        }
+        contexto.Salvar();
+    }
 
-        public bool EditarRegistro(Guid idRegistro, T registroEditado)
-        {
-            foreach (T item in registros)
-            {
-                if (item.Id == idRegistro)
-                {
-                    item.AtualizarRegistro(registroEditado);
-
-                    contexto.Salvar();
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool ExcluirRegistro(Guid idRegistro)
-        {
-            T registroSelecionado = SelecionarRegistroPorId(idRegistro);
-
-            if (registroSelecionado != null)
-            {
-                registros.Remove(registroSelecionado);
+    public bool EditarRegistro(Guid idRegistro, T registroEditado) {
+        
+        foreach (T item in registros) {
+            
+            if (item.Id == idRegistro) {
+                item.AtualizarRegistro(registroEditado);
 
                 contexto.Salvar();
 
                 return true;
             }
-
-            return false;
         }
 
-        public List<T> SelecionarRegistros()
-        {
-            return registros;
+        return false;
+    }
+
+    public bool ExcluirRegistro(Guid idRegistro) {
+        T registroSelecionado = SelecionarRegistroPorId(idRegistro);
+
+        if (registroSelecionado != null) {
+            registros.Remove(registroSelecionado);
+
+            contexto.Salvar();
+
+            return true;
         }
 
-        public T SelecionarRegistroPorId(Guid idRegistro)
-        {
-            foreach (T item in registros)
-            {
-                if (item.Id == idRegistro)
-                    return item;
-            }
+        return false;
+    }
 
-            return null;
+    public List<T> SelecionarRegistros() {
+        return registros;
+    }
+
+    public T SelecionarRegistroPorId(Guid idRegistro) {
+        
+        foreach (T item in registros) {
+            
+            if (item.Id == idRegistro)
+                return item;
         }
 
+        return null!;
     }
 }
