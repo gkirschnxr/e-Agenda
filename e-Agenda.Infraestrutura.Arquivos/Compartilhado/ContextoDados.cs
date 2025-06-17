@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
+using e_Agenda.Dominio.ModuloTarefa;
 
 
 namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado
@@ -7,13 +8,13 @@ namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado
     public class ContextoDados
     {
         private string pastaArmazenamento = "C:\\temp";
-        private string arquivoArmazenamento = "dados-controle-bar.json";
+        private string arquivoArmazenamento = "dados-e-agenda.json";
 
-      
+        public List<Tarefa> Tarefas { get; set; }
 
         public ContextoDados()
         {
-            
+            Tarefas = new List<Tarefa>();
         }
 
         public ContextoDados(bool carregarDados) : this()
@@ -58,7 +59,7 @@ namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado
 
             if (contextoArmazenado == null) return;
 
-            
+            Tarefas = contextoArmazenado.Tarefas;
         }
 
     }
