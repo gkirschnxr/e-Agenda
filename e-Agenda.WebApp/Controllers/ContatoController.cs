@@ -1,6 +1,12 @@
-﻿namespace e_Agenda.WebApp.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace e_Agenda.WebApp.Controllers;
+
+[Route("contatos")]
+public class ContatoController : Controller
 {
-    public class ContatoController
-    {
+    [HttpGet]
+    public IActionResult Index() {
+        return View();
     }
 }

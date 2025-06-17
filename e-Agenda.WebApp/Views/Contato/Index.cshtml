@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Visualizar Contatos";
+}
+
+<p>
+    <a class="btn btn-outline-primary" href="/contatos/cadastrar">
+        <i class="bi bi-person-fill-add"></i>
+        Novo Contato
+    </a>
+</p>
+
+@* <div class="d-flex flex-wrap gap-2">
+    @foreach (var contato in Model.Registros) {
+        <div class="col-12 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Nome: @contato.Nome</h5>
+                    <p class="card-text"><span class="fw-semibold">Email:</span> @contato.Email</p>
+                    <p class="card-text"><span class="fw-semibold">Telefone:</span> @contato.Telefone</p>
+                    <span class="d-flex gap-1 justify-content-end mt-4">
+                        <a href="/contatos/detalhes/@contato.Id" class="btn-primary"><i class="bi bi-search"></i></a>
+                        <a href="/contatos/editar/@contato.Id" class="btn-secundary"><i class="bi bi-pencil-square"></i></a>
+                        <a href="/contatos/excluir/@contato.Id" class="btn-danger"><i class="bi bi-trash"></i></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+</div> *@
