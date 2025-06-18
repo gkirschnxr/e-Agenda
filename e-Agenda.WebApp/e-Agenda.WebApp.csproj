@@ -8,14 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="Models\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\lib\bootstrap-5.3.6-dist\.DS_Store" />
     <None Include="wwwroot\lib\bootstrap-5.3.6-dist\css\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\e-Agenda.Infraestrutura.Arquivos\e-Agenda.Infraestrutura.Arquivos.csproj" />
   </ItemGroup>
 
 </Project>
