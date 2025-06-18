@@ -36,6 +36,16 @@ public class EditarContatoViewModel : FormularioContatoViewModel {
     }
 }
 
+public class ExcluirContatoViewModel {
+    public Guid Id { get; set; }
+    public string Nome { get; set; } = string.Empty;
+    public ExcluirContatoViewModel() { }
+    public ExcluirContatoViewModel(Guid id, string nome) : this() {
+        Id = id;
+        Nome = nome;
+    }
+}
+
 public class VisualizarContatosViewModel {
     public List<DetalhesContatoViewModel> Registros { get; set; }
 

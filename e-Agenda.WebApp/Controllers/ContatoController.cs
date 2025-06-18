@@ -69,6 +69,25 @@ public class ContatoController : Controller {
         return RedirectToAction(nameof(Index));
     }
 
+
+    [HttpGet("excluir/{id:guid}")]
+    public IActionResult Excluir(Guid id) {
+        var registro = repositorioContato.SelecionarRegistroPorId(id);
+
+        var excluirVM = new ExcluirContatoViewModel(registro.Id, registro.Nome);
+
+        return View(excluirVM);
+    }
+
+
+    [HttpPost("excluir/{id:guid}")]
+    public IActionResult ExcluirRegistro(Guid id) {
+        repositorioContato.ExcluirRegistro(id);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id) {
         var registro = repositorioContato.SelecionarRegistroPorId(id);
