@@ -23,6 +23,19 @@ public class CadastrarContatoViewModel : FormularioContatoViewModel {
     }
 }
 
+public class EditarContatoViewModel : FormularioContatoViewModel {
+    public Guid Id { get; set; }
+    public EditarContatoViewModel() { }
+    public EditarContatoViewModel(Guid id, string nome, string email, string telefone) : this() {
+        Id = id;
+        Nome = nome;
+        Email = email;
+        Telefone = telefone;
+        //Cargo = cargo;
+        //Empresa = empresa;
+    }
+}
+
 public class VisualizarContatosViewModel {
     public List<DetalhesContatoViewModel> Registros { get; set; }
 

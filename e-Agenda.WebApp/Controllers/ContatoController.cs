@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace e_Agenda.WebApp.Controllers;
 
 [Route("contatos")]
-public class ContatoController : Controller
-{
+public class ContatoController : Controller {
     private readonly ContextoDados contexto;
     private readonly IRepositorioContato repositorioContato;
 
@@ -18,14 +17,16 @@ public class ContatoController : Controller
         repositorioContato = new RepositorioContato(contexto);
     }
 
+
     [HttpGet]
-    public IActionResult Index() { 
+    public IActionResult Index() {
         var registros = repositorioContato.SelecionarRegistros();
 
         var visualizarVM = new VisualizarContatosViewModel(registros);
 
-        return View(visualizarVM); 
+        return View(visualizarVM);
     }
+
 
     [HttpGet("cadastrar")]
     public IActionResult Cadastrar() {
@@ -34,13 +35,37 @@ public class ContatoController : Controller
         return View(cadastrarVM);
     }
 
+
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarContatoViewModel cadastrarVM) {
         var registro = cadastrarVM.ParaEntidade();
 
         repositorioContato.CadastrarRegistro(registro);
-    
+
+        return RedirectToAction(nameof(Index));
+    }
+
+
+    [HttpGet("editar/{id:guid}")]
+    public IActionResult Editar(Guid id) {
+        var registro = repositorioContato.SelecionarRegistroPorId(id);
+
+        var editarVM = new EditarContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
+
+        return View(editarVM);
+    }
+
+
+    [HttpPost("editar/{id:guid}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Editar(Guid id, EditarContatoViewModel editarVM) {
+        var registros = repositorioContato.SelecionarRegistros();
+
+        var registroEditado = editarVM.ParaEntidade();
+
+        repositorioContato.EditarRegistro(id, registroEditado);
+
         return RedirectToAction(nameof(Index));
     }
 }

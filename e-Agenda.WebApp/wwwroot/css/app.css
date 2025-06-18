@@ -1,1 +1,11 @@
 ﻿body {background-color: #E8ECED;}
+
+.card-contato {
+    width: 400px; /* Largura fixa */
+    min-height: 350px; /* Altura mínima para manter o formato retangular */
+    max-width: 100%; /* Garante responsividade em telas menores */
+    margin: 0 auto; /* Centraliza o card */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
