@@ -68,4 +68,13 @@ public class ContatoController : Controller {
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpGet("detalhes/{id:guid}")]
+    public IActionResult Detalhes(Guid id) {
+        var registro = repositorioContato.SelecionarRegistroPorId(id);
+
+        var detalhesVM = new DetalhesContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
+
+        return View(detalhesVM);
+    }
 }
