@@ -39,6 +39,29 @@ public class ContatoController : Controller {
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarContatoViewModel cadastrarVM) {
+        var registros = repositorioContato.SelecionarRegistros();
+
+        cadastrarVM.FormatarTelefone();
+
+        foreach (var item in registros) {
+            
+            if (item.Telefone == cadastrarVM.Telefone) {
+                ModelState.AddModelError("CadastroUnico", "Já existe um contato com esse telefone.");
+                break;
+            }
+        }
+
+        foreach (var item in registros) {
+
+            if (item.Email == cadastrarVM.Email) {
+                ModelState.AddModelError("CadastroUnico", "Já existe um contato com esse e-mail.");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVM);
+
         var registro = cadastrarVM.ParaEntidade();
 
         repositorioContato.CadastrarRegistro(registro);
@@ -61,6 +84,27 @@ public class ContatoController : Controller {
     [ValidateAntiForgeryToken]
     public IActionResult Editar(Guid id, EditarContatoViewModel editarVM) {
         var registros = repositorioContato.SelecionarRegistros();
+
+        editarVM.FormatarTelefone();
+
+        foreach (var item in registros) {
+
+            if (item.Id != editarVM.Id && item.Telefone == editarVM.Telefone) {
+                ModelState.AddModelError("CadastroUnico", "Já existe um contato com esse telefone.");
+                break;
+            }
+        }
+
+        foreach (var item in registros) {
+
+            if (item.Id != editarVM.Id && item.Email == editarVM.Email) {
+                ModelState.AddModelError("CadastroUnico", "Já existe um contato com esse e-mail.");
+                break;
+            }
+        }
+
+        if (!ModelState.IsValid)
+            return View(editarVM);
 
         var registroEditado = editarVM.ParaEntidade();
 
