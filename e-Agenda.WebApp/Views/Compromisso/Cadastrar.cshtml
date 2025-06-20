@@ -1,0 +1,76 @@
+﻿@model CadastrarCompromissoViewModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Cadastro de Compromisso";
+}
+
+<hr style="width: 100%"/>
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card rounded-4 border-0">
+            <div class="card-body p-md-5">
+                <form asp-action="Cadastrar">
+                    <h3>Formulário de Cadastro</h3>
+
+@*                     @if (ViewData.ModelState["CadastroUnico"]?.Errors.Count > 0) {
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            @ViewData.ModelState["CadastroUnico"]!.Errors.First().ErrorMessage
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    } *@
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Assunto" class="control-label fs-5">Assunto:</label>
+                        <input asp-for="Assunto" class="form-control" value="@Model.Assunto" />
+                        <span asp-validation-for="Assunto" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="DataOcorrencia" class="control-label fs-5">Data da Ocorrencia:</label>
+                        <input asp-for="DataOcorrencia" class="form-control" value="@Model.DataOcorrencia" />
+                        <span asp-validation-for="DataOcorrencia" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="HoraInicio" class="control-label fs-5">HoraInicio:</label>
+                        <input asp-for="HoraInicio" class="form-control" value="@Model.HoraInicio" />
+                        <span asp-validation-for="HoraInicio" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="HoraTermino" class="control-label fs-5">HoraTermino:</label>
+                        <input asp-for="HoraTermino" class="form-control" value="@Model.HoraTermino" />
+                        <span asp-validation-for="HoraTermino" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Tipo" class="control-label fs-5">Tipo:</label>
+                        <input asp-for="Tipo" class="form-control" value="@Model.Tipo" />
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Contato" class="control-label fs-5">Contato:</label>
+                        <input asp-for="Contato" class="form-control" value="@Model.Contato" />
+                        <span asp-validation-for="Contato" class="text-danger"></span>
+
+                    </div>
+
+
+                    <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
+                        <a href="/compromissos">Voltar para Visualização</a>
+                        <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
