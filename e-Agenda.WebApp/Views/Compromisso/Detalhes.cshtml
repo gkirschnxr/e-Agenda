@@ -1,0 +1,53 @@
+﻿@model DetalhesCompromissoViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<hr style="width: 100%" />
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-8 card-contato">
+        <div class="card rounded-4 border-0">
+            <div class="card-body p-md-5">
+                <h3>@Model.Assunto</h3>
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="Id" class="control-label fs-6">Id:</label>
+                    <input asp-for="Id" class="form-control" value="@Model.Id" readonly disabled/>
+
+                </div>
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="DataOcorrencia" class="control-label fs-5">DataOcorrencia:</label>
+                    <input asp-for="DataOcorrencia" class="form-control" value="@Model.DataOcorrencia" readonly disabled />
+
+                </div>
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="HoraInicio" class="control-label fs-5">HoraInicio:</label>
+                    <input asp-for="HoraInicio" class="form-control" value="@Model.HoraInicio" readonly disabled />
+
+                </div>
+
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="HoraTermino" class="control-label fs-5">HoraTermino:</label>
+                    <input asp-for="HoraTermino" class="form-control" value="@Model.HoraTermino" readonly disabled />
+
+                </div>
+
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="Tipo" class="control-label fs-5">Tipo:</label>
+                    <input asp-for="Tipo" class="form-control" value="@Model.Tipo" readonly disabled />
+
+                </div>
+
+                <div class="form-group d-grid gap-2 mt-3">
+                    <label asp-for="Contato" class="control-label fs-5">Contato:</label>
+                    <input asp-for="Contato" class="form-control" value="@Model.Contato" readonly disabled />
+
+                </div>
+                <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
+                    <a href="/compromissos">Voltar para Visualização</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
