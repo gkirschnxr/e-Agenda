@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
 using e_Agenda.Dominio.ModuloContato;
+using e_Agenda.Dominio.ModuloCompromissos;
 
 namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
@@ -10,9 +11,11 @@ public class ContextoDados
     private string arquivoArmazenamento = "dados-e-agenda.json";  
 
     public List<Contato> Contatos { get; set; }
+    public List<Compromisso> Compromissos { get; set; }
 
     public ContextoDados() {
         Contatos = new List<Contato>();
+        Compromissos = new List<Compromisso>();
     }
 
     public ContextoDados(bool carregarDados) : this() {
@@ -56,5 +59,6 @@ public class ContextoDados
         if (contextoArmazenado == null) return;
 
         Contatos = contextoArmazenado.Contatos;
+        Compromissos = contextoArmazenado.Compromissos;
     }
 }
