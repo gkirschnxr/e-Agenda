@@ -1,6 +1,8 @@
 ﻿using e_Agenda.Dominio.ModuloCompromissos;
+using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
+using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +30,14 @@ public class CompromissoController : Controller
         return View(visualizarVM);
     }
 
+
     [HttpGet("cadastrar")]
     public IActionResult Cadastrar() {
         var cadastrarVM = new CadastrarCompromissoViewModel();
 
         return View(cadastrarVM);
     }
+
 
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
@@ -45,12 +49,36 @@ public class CompromissoController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+
+    [HttpGet("editar/{id:guid}")]
+    public IActionResult Editar(Guid id) {
+        var registro = repositorioCompromisso.SelecionarRegistroPorId(id);
+
+        var editarVM = new EditarCompromissoViewModel(id, registro.Assunto, registro.DataOcorrencia, registro.HoraInicio,
+                                                 registro.HoraTermino, registro.Tipo);
+
+        return View(editarVM);
+    }
+
+    [HttpPost("editar/{id:guid}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Editar(Guid id, EditarCompromissoViewModel editarVM) {
+        var registros = repositorioCompromisso.SelecionarRegistros();
+
+        var registroEditado = editarVM.ParaEntidade();
+
+        repositorioCompromisso.EditarRegistro(id, registroEditado);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id) {
         var registro = repositorioCompromisso.SelecionarRegistroPorId(id);
 
         var detalhesVM = new DetalhesCompromissoViewModel(id, registro.Assunto, registro.DataOcorrencia, registro.HoraInicio,
-                                                         registro.HoraTermino, registro.Tipo, registro.Contato);
+                                                         registro.HoraTermino, registro.Tipo);
 
         return View(detalhesVM);
     }
