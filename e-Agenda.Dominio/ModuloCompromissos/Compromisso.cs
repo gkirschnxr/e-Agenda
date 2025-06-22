@@ -12,6 +12,9 @@ public class Compromisso : EntidadeBase<Compromisso>
     public enum TipoCompromisso {Presencial,Online}
     public TipoCompromisso Tipo { get; set; }
     public Compromisso() { }
+    public string? Link { get; set; }
+    public string? Local { get; set; }
+
     public Compromisso(string assunto, DateOnly dataOcorrencia, DateTime horaInicio, DateTime horaTermino, TipoCompromisso tipo) {
         Assunto = assunto;
         DataOcorrencia = dataOcorrencia;

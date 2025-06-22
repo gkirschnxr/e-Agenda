@@ -58,6 +58,16 @@
                         <span asp-validation-for="Tipo" class="text-danger"></span>
                     </div>
 
+                    <div class="form-group" id="divLocal">
+                        <label asp-for="Local"></label>
+                        <input asp-for="Local" class="form-control" />
+                    </div>
+
+                    <div class="form-group" id="divLink" style="display:none;">
+                        <label asp-for="Link"></label>
+                        <input asp-for="Link" class="form-control" />
+                    </div>
+
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
                         <a href="/compromissos">Voltar para Visualização</a>
                         <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
@@ -70,4 +80,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ValidacaoCompromisso.js"></script>
 }

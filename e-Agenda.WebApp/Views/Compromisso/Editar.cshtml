@@ -50,13 +50,25 @@
                         </div>
                     </div>
 
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="Tipo" class="control-label fs-5">Tipo do evento:</label>
-                        <select asp-for="Tipo" class="form-control">
-                            <option value="Presencial">Presencial</option>
-                            <option value="Online">Online</option>
-                        </select>
-                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                    <div class="input-group mb-3">
+                        <div>
+                            <label asp-for="Tipo" class="control-label fs-5">Tipo do evento:</label>
+                            <select asp-for="Tipo" class="form-control">
+                                <option value="Presencial">Presencial</option>
+                                <option value="Online">Online</option>
+                            </select>
+                            <span asp-validation-for="Tipo" class="text-danger"></span>
+                        </div>
+
+                        <div>
+                            <label asp-for="Local"></label>
+                            <input asp-for="Local" class="form-control" />
+                        </div>
+
+                        <div>
+                            <label asp-for="Link"></label>
+                            <input asp-for="Link" class="form-control" />
+                        </div>
                     </div>
 
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
@@ -71,4 +83,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ValidacaoCompromisso.js"></script>
 }

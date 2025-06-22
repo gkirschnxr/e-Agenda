@@ -6,6 +6,7 @@ using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using static e_Agenda.Dominio.ModuloCompromissos.Compromisso;
 
 namespace e_Agenda.WebApp.Controllers;
 
@@ -33,6 +34,7 @@ public class CompromissoController : Controller
 
     [HttpGet("cadastrar")]
     public IActionResult Cadastrar() {
+
         var cadastrarVM = new CadastrarCompromissoViewModel();
 
         return View(cadastrarVM);

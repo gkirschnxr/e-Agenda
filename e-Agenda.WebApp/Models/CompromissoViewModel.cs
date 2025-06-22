@@ -1,6 +1,7 @@
 ﻿using e_Agenda.Dominio.ModuloCompromissos;
 using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.WebApp.Extensions;
+using System.ComponentModel.DataAnnotations;
 using static e_Agenda.Dominio.ModuloCompromissos.Compromisso;
 
 namespace e_Agenda.WebApp.Models;
@@ -11,6 +12,12 @@ public class FormularioCompromissoViewModel {
     public DateTime HoraInicio { get; set; }
     public DateTime HoraTermino { get; set; }
     public TipoCompromisso Tipo { get; set; }
+
+    [Display(Name = "Link da Reunião")]
+    public string? Link { get; set; }
+
+    [Display(Name = "Local")]
+    public string? Local { get; set; }
 }
 
 public class CadastrarCompromissoViewModel : FormularioCompromissoViewModel {
