@@ -24,29 +24,39 @@
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="Assunto" class="control-label fs-5">Assunto:</label>
                         <input asp-for="Assunto" class="form-control" value="@Model.Assunto" />
+                        <span asp-validation-for="Assunto" class="text-danger"></span>
 
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="DataOcorrencia" class="control-label fs-5">Data da Ocorrencia:</label>
-                        <input asp-for="DataOcorrencia" class="form-control" value="@Model.DataOcorrencia" />
-
+                        <label asp-for="DataOcorrencia" class="control-label fs-5">Data:</label>
+                        <input asp-for="DataOcorrencia" type="date" class="form-control"
+                               value="@(Model.DataOcorrencia == default ? DateTime.Now.ToString("yyyy-MM-dd") : Model.DataOcorrencia.ToString("yyyy-MM-dd"))" />
+                        <span asp-validation-for="DataOcorrencia" class="text-danger"></span>
                     </div>
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="HoraInicio" class="control-label fs-5">HoraInicio:</label>
-                        <input asp-for="HoraInicio" class="form-control" value="@Model.HoraInicio" />
-
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group d-grid gap-2">
+                                <label asp-for="HoraInicio" class="control-label fs-5">De:</label>
+                                <input asp-for="HoraInicio" type="time" class="form-control" value="@(Model.HoraInicio.ToString(@"hh\:mm"))" />
+                                <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group d-grid gap-2">
+                                <label asp-for="HoraTermino" class="control-label fs-5">Até:</label>
+                                <input asp-for="HoraTermino" type="time" class="form-control" value="@(Model.HoraTermino.ToString(@"hh\:mm"))" />
+                                <span asp-validation-for="HoraTermino" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="HoraTermino" class="control-label fs-5">HoraTermino:</label>
-                        <input asp-for="HoraTermino" class="form-control" value="@Model.HoraTermino" />
-
-                    </div>
-
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="Tipo" class="control-label fs-5">Tipo:</label>
-                        <input asp-for="Tipo" class="form-control" value="@Model.Tipo" />
-
+                        <label asp-for="Tipo" class="control-label fs-5">Tipo do evento:</label>
+                        <select asp-for="Tipo" class="form-control">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Online">Online</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
                     </div>
 
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
