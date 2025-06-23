@@ -1,0 +1,80 @@
+﻿@model EditarCompromissoViewModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Edição de Compromisso";
+}
+
+<hr style="width: 100%" />
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <div class="card rounded-4 border-0">
+            <div class="card-body md-5">
+                <form asp-action="Editar" asp-route-itemid="@Model.Id">
+                    <h3>Formulário de Edição</h3>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Assunto" class="control-label fs-5">Assunto:</label>
+                        <input asp-for="Assunto" class="form-control" value="@Model.Assunto" />
+                        <span asp-validation-for="Assunto" class="text-danger"></span>
+
+                    </div>
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="DataOcorrencia" class="control-label fs-5">Data:</label>
+                        <input asp-for="DataOcorrencia" type="date" class="form-control"
+                               value="@(Model.DataOcorrencia == default ? DateTime.Now.ToString("yyyy-MM-dd") : Model.DataOcorrencia.ToString("yyyy-MM-dd"))" />
+                        <span asp-validation-for="DataOcorrencia" class="text-danger"></span>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group d-grid gap-2">
+                                <label asp-for="HoraInicio" class="control-label fs-5">De:</label>
+                                <input asp-for="HoraInicio" type="time" class="form-control" value="@(Model.HoraInicio.ToString(@"hh\:mm"))" />
+                                <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group d-grid gap-2">
+                                <label asp-for="HoraTermino" class="control-label fs-5">Até:</label>
+                                <input asp-for="HoraTermino" type="time" class="form-control" value="@(Model.HoraTermino.ToString(@"hh\:mm"))" />
+                                <span asp-validation-for="HoraTermino" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <div>
+                            <label asp-for="Tipo" class="control-label fs-5">Tipo do evento:</label>
+                            <select asp-for="Tipo" class="form-control">
+                                <option value="Presencial">Presencial</option>
+                                <option value="Online">Online</option>
+                            </select>
+                            <span asp-validation-for="Tipo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group" id="divLocal">
+                            <label asp-for="Local"></label>
+                            <input asp-for="Local" class="form-control" />
+                        </div>
+
+                        <div class="form-group" id="divLink" style="display:none;">
+                            <label asp-for="Link"></label>
+                            <input asp-for="Link" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
+                        <a href="/compromissos">Voltar para Visualização</a>
+                        <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ValidacaoCompromisso.js"></script>
+}

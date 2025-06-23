@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace e_Agenda.WebApp.Controllers;
 
 [Route("contatos")]
-public class ContatoController : Controller {
+public class ContatoController : Controller 
+{
     private readonly ContextoDados contexto;
     private readonly IRepositorioContato repositorioContato;
 
