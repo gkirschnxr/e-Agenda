@@ -11,11 +11,13 @@ public class Compromisso : EntidadeBase<Compromisso>
     public DateTime HoraTermino { get; set; }
     public enum TipoCompromisso {Presencial,Online}
     public TipoCompromisso Tipo { get; set; }
-    public Compromisso() { }
     public string? Link { get; set; }
     public string? Local { get; set; }
 
+    public Compromisso() { }
+
     public Compromisso(string assunto, DateOnly dataOcorrencia, DateTime horaInicio, DateTime horaTermino, TipoCompromisso tipo) {
+        Id = Guid.NewGuid();
         Assunto = assunto;
         DataOcorrencia = dataOcorrencia;
         HoraInicio = horaInicio;

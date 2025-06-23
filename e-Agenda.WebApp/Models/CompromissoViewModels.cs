@@ -2,11 +2,13 @@
 using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.WebApp.Extensions;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata.Ecma335;
 using static e_Agenda.Dominio.ModuloCompromissos.Compromisso;
 
 namespace e_Agenda.WebApp.Models;
 
 public class FormularioCompromissoViewModel {
+    [Required(ErrorMessage = "O campo \"Assunto\" é obrigatório")]
     public string Assunto { get; set; } = string.Empty;
     public DateOnly DataOcorrencia { get; set; }
     public DateTime HoraInicio { get; set; }
@@ -18,6 +20,7 @@ public class FormularioCompromissoViewModel {
 
     [Display(Name = "Local")]
     public string? Local { get; set; }
+
 }
 
 public class CadastrarCompromissoViewModel : FormularioCompromissoViewModel {

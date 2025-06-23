@@ -4,6 +4,7 @@ using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace e_Agenda.WebApp.Controllers;
 
@@ -41,6 +42,21 @@ public class CompromissoController : Controller
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarCompromissoViewModel cadastrarVM) {
+        var registros = repositorioCompromisso.SelecionarRegistros();
+
+        foreach (var item in registros) {
+
+            if (item.HoraInicio == cadastrarVM.HoraInicio) {
+                ModelState.AddModelError("", "Já existe um compromisso nesse horário");
+                return View("cadastrar");
+            }
+
+            if (item.HoraTermino == cadastrarVM.HoraTermino) {
+                ModelState.AddModelError("", "Já existe um compromisso nesse horário");
+                return View("cadastrar");
+            } else break;
+        }
+
         var registro = cadastrarVM.ParaEntidade();
 
         repositorioCompromisso.CadastrarRegistro(registro);
