@@ -2,8 +2,10 @@
 
 namespace e_Agenda.WebApp.Controllers;
 
-public class HomeController : Controller
+[Route("compromissos")]
+public class CompromissoController : Controller
 {
+    [HttpGet]
     public IActionResult Index() {
         return View();
     }

@@ -1,0 +1,25 @@
+﻿@model ExcluirContatoViewModel
+
+@{
+    Layout = "_Layout";
+    ViewBag.Titulo = "Exclusão de Contato";
+}
+
+<hr />
+<div class="row justify-content-center my-3">
+    <div class="col-md-6">
+        <div class="card rounded-3 border-0 p-0">
+            <div class="card-body p-md-4">
+
+                <h5 class="justify-content-start mb-5 ms-md-2">Você deseja realmente excluir o contato "@Model.Nome"?</h5>
+
+                <form asp-action="Excluir" asp-route-id="@Model.Id">
+                    <div class="d-flex align-items-sm-baseline justify-content-center gap-3">
+                        <a class="btn btn-secondary" href="/contatos">Voltar</a>
+                        <button type="submit" class="btn btn-danger px-4">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

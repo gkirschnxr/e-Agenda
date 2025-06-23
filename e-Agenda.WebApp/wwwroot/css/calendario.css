@@ -1,13 +1,7 @@
 ﻿body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+
 
 .botoes {
     margin-bottom: 20px;
