@@ -1,12 +1,9 @@
 ﻿using e_Agenda.Dominio.ModuloCompromissos;
-using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
-using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using static e_Agenda.Dominio.ModuloCompromissos.Compromisso;
 
 namespace e_Agenda.WebApp.Controllers;
 
@@ -70,6 +67,24 @@ public class CompromissoController : Controller
         var registroEditado = editarVM.ParaEntidade();
 
         repositorioCompromisso.EditarRegistro(id, registroEditado);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+
+    [HttpGet("excluir/{id:guid}")]
+    public IActionResult Excluir(Guid id) {
+        var registro = repositorioCompromisso.SelecionarRegistroPorId(id);
+
+        var excluirVM = new ExcluirCompromissoViewModel(registro.Id, registro.Assunto);
+
+        return View(excluirVM);
+    }
+
+
+    [HttpPost("excluir/{id:guid}")]
+    public IActionResult ExcluirRegistro(Guid id) {
+        repositorioCompromisso.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }

@@ -48,6 +48,17 @@ public class EditarCompromissoViewModel : FormularioCompromissoViewModel
     }
 }
 
+public class ExcluirCompromissoViewModel
+{
+    public Guid Id { get; set; }
+    public string Assunto { get; set; } = string.Empty;
+    public ExcluirCompromissoViewModel() { }
+    public ExcluirCompromissoViewModel(Guid id, string assunto) : this() {
+        Id = id;
+        Assunto = assunto;
+    }
+}
+
 public class VisualizarCompromissosViewModel {
     public List<DetalhesCompromissoViewModel> Registros { get; set; }
 

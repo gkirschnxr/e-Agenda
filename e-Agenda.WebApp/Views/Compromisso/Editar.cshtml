@@ -14,13 +14,6 @@
                 <form asp-action="Editar" asp-route-itemid="@Model.Id">
                     <h3>Formulário de Edição</h3>
 
-@*                     @if (ViewData.ModelState["CadastroUnico"]?.Errors.Count > 0) {
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            @ViewData.ModelState["CadastroUnico"]!.Errors.First().ErrorMessage
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    } *@
-
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="Assunto" class="control-label fs-5">Assunto:</label>
                         <input asp-for="Assunto" class="form-control" value="@Model.Assunto" />
@@ -60,12 +53,12 @@
                             <span asp-validation-for="Tipo" class="text-danger"></span>
                         </div>
 
-                        <div>
+                        <div class="form-group" id="divLocal">
                             <label asp-for="Local"></label>
                             <input asp-for="Local" class="form-control" />
                         </div>
 
-                        <div>
+                        <div class="form-group" id="divLink" style="display:none;">
                             <label asp-for="Link"></label>
                             <input asp-for="Link" class="form-control" />
                         </div>
