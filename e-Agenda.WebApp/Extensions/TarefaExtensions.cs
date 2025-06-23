@@ -1,22 +1,26 @@
 ﻿using e_Agenda.Dominio.ModuloTarefa;
 using e_Agenda.WebApp.Models;
-
-
 namespace e_Agenda.WebApp.Extensions
 {
     public static class TarefaExtensions
     {
-        public static Tarefa ParaEntidade(this FormularioTarefaViewModels formularioVM) 
+        public static Tarefa ParaEntidade(this FormularioTarefaViewModel formularioVM)
         {
-            return new Tarefa(formularioVM.Titulo, formularioVM.Prioridade, formularioVM.ItensTarefa);
+            return new Tarefa(formularioVM.Titulo, formularioVM.Prioridade);
         }
-        public static DetalhesTarefasViewModel ParaDetalhesVM(this Tarefa tarefa) 
+
+        public static DetalhesTarefaViewModel ParaDetalhesVM(this Tarefa tarefa)
         {
-            return new DetalhesTarefasViewModel(
-                tarefa.Id,
-                tarefa.Titulo,
-                tarefa.Prioridade,
-                tarefa.ItensTarefa
+            return new DetalhesTarefaViewModel
+                (
+                    tarefa.Id,
+                    tarefa.Titulo,
+                    tarefa.Prioridade,
+                    tarefa.DataCriacao,
+                    tarefa.DataConclusao,
+                    tarefa.PercentualConcluido,
+                    tarefa.Concluida
+                    
                 );
         }
     }

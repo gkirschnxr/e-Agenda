@@ -2,7 +2,7 @@
 
 @{
     Layout = "_Layout";
-    ViewBag.Titulo = "Cadastro de Tarefa";
+    ViewBag.Titulo = "Criação de Tarefa";
 }
 
 <hr />
@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-body p-md-5">
                 <form asp-action="Cadastrar">
-                    <h3>Formulário de Cadastro</h3>
+                    <h3>Cadastro de Tarefa</h3>
 
                     @if (ViewData.ModelState["CadastroUnico"]?.Errors.Count > 0)
                     {
@@ -29,13 +29,8 @@
                     </div>
                     <div class="form-group d-grid gap-2 mt-3">
                         <label asp-for="Prioridade" class="control-label fs-5">Prioridade:</label>
-                        <input asp-for="Prioridade" class="form-control" />
+                        <select asp-for="Prioridade" asp-items="@Html.GetEnumSelectList<PrioridadeTarefa>()" class="form-select"></select>
                         <span asp-validation-for="Prioridade" class="text-danger"></span>
-                    </div>
-                    <div class="form-group d-grid gap-2 mt-3">
-                        <label asp-for="ItensTarefa" class="control-label fs-5">Itens da Tarefa:</label>
-                        <input asp-for="ItensTarefa" class="form-control" />
-                        <span asp-validation-for="ItensTarefa" class="text-danger"></span>
                     </div>
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
                         <a href="/tarefas">Voltar para a listagem</a>
