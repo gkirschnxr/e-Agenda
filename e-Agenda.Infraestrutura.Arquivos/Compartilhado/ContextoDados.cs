@@ -2,6 +2,7 @@
 using System.Text.Json;
 using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Dominio.ModuloCompromissos;
+using e_Agenda.Dominio.ModuloTarefa;
 
 namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
