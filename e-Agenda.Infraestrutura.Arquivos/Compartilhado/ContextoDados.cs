@@ -3,6 +3,8 @@ using System.Text.Json;
 using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Dominio.ModuloCompromissos;
 using e_Agenda.Dominio.ModuloTarefa;
+using eAgenda.Dominio.ModuloCategoria;
+using eAgenda.Dominio.ModuloDespesa;
 
 namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
@@ -14,11 +16,15 @@ public class ContextoDados
     public List<Contato> Contatos { get; set; }
     public List<Compromisso> Compromissos { get; set; }
     public List<Tarefa> Tarefas { get; set; }
+    public List<Categoria> Categorias { get; set; }
+    public List<Despesa> Despesas { get; set; }
 
     public ContextoDados() {
         Contatos = new List<Contato>();
         Compromissos = new List<Compromisso>();
         Tarefas = new List<Tarefa>();
+        Categorias = new List<Categoria>();
+        Despesas = new List<Despesa>();
     }
 
     public ContextoDados(bool carregarDados) : this() {
@@ -64,5 +70,7 @@ public class ContextoDados
         Contatos = contextoArmazenado.Contatos;
         Compromissos = contextoArmazenado.Compromissos;
         Tarefas = contextoArmazenado.Tarefas;
+        Categorias = contextoArmazenado.Categorias;
+        Despesas = contextoArmazenado.Despesas;
     }
 }
