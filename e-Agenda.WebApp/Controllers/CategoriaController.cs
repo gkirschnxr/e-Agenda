@@ -1,9 +1,5 @@
-﻿using e_Agenda.Dominio.ModuloContato;
-using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
-using e_Agenda.Infraestrutura.Arquivos.ModuloCategoria;
+﻿using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using eAgenda.Dominio.ModuloCategoria;
-using eAgenda.Dominio.ModuloDespesa;
-using eAgenda.Infraestrutura.ModuloDespesa;
 using eAgenda.WebApp.Extensions;
 using eAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,19 +9,19 @@ namespace eAgenda.WebApp.Controllers;
 [Route("categorias")]
 public class CategoriaController : Controller
 {
-    private readonly ContextoDados contexto;
-    private readonly IRepositorioCategoria repositorioCategoria;
+    private readonly ContextoDados _contexto;
+    private readonly IRepositorioCategoria _repositorioCategoria;
 
-    public CategoriaController()
-    {
-        contexto = new ContextoDados(true);
-        repositorioCategoria = new RepositorioCategoria(contexto);
+    // inversao de controle
+    public CategoriaController(ContextoDados contexto, IRepositorioCategoria repositorioCategoria) {
+        _contexto = contexto;
+        _repositorioCategoria = repositorioCategoria;
     }
    
     [HttpGet]
     public IActionResult Index()
     {
-        var registros = repositorioCategoria.SelecionarRegistros();
+        var registros = _repositorioCategoria.SelecionarRegistros();
 
         var visualizarVM = new VisualizarCategoriasViewModel(registros);
 
@@ -44,7 +40,7 @@ public class CategoriaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarCategoriaViewModel cadastrarVM)
     {
-        var registros = repositorioCategoria.SelecionarRegistros();
+        var registros = _repositorioCategoria.SelecionarRegistros();
 
         foreach (var item in registros)
         {
@@ -60,7 +56,7 @@ public class CategoriaController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        repositorioCategoria.CadastrarRegistro(entidade);
+        _repositorioCategoria.CadastrarRegistro(entidade);
 
         return RedirectToAction(nameof(Index));
     }
@@ -68,7 +64,7 @@ public class CategoriaController : Controller
     [HttpGet("editar/{id:guid}")]
     public ActionResult Editar(Guid id)
     {
-        var registroSelecionado = repositorioCategoria.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCategoria.SelecionarRegistroPorId(id);
 
         var editarVM = new EditarCategoriaViewModel(
             id,
@@ -82,7 +78,7 @@ public class CategoriaController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Editar(Guid id, EditarCategoriaViewModel editarVM)
     {
-        var registros = repositorioCategoria.SelecionarRegistros();
+        var registros = _repositorioCategoria.SelecionarRegistros();
 
         foreach (var item in registros)
         {
@@ -98,7 +94,7 @@ public class CategoriaController : Controller
 
         var entidadeEditada = editarVM.ParaEntidade();
 
-        repositorioCategoria.EditarRegistro(id, entidadeEditada);
+        _repositorioCategoria.EditarRegistro(id, entidadeEditada);
 
         return RedirectToAction(nameof(Index));
     }
@@ -106,7 +102,7 @@ public class CategoriaController : Controller
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id)
     {
-        var registroSelecionado = repositorioCategoria.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCategoria.SelecionarRegistroPorId(id);
 
         var excluirVM = new ExcluirCategoriaViewModel(registroSelecionado.Id, registroSelecionado.Titulo);
 
@@ -117,7 +113,7 @@ public class CategoriaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult ExcluirConfirmado(Guid id)
     {
-        repositorioCategoria.ExcluirRegistro(id);
+        _repositorioCategoria.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }
@@ -125,7 +121,7 @@ public class CategoriaController : Controller
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id)
     {
-        var registroSelecionado = repositorioCategoria.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCategoria.SelecionarRegistroPorId(id);
 
         var detalhesVM = new DetalhesCategoriaViewModel(
             id,

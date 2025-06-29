@@ -1,8 +1,6 @@
 ﻿using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
-using e_Agenda.Infraestrutura.Arquivos.ModuloCategoria;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
-using eAgenda.Infraestrutura.ModuloDespesa;
 using eAgenda.WebApp.Extensions;
 using eAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,21 +11,21 @@ namespace eAgenda.WebApp.Controllers;
 [Route("despesas")]
 public class DespesaController : Controller
 {
-    private readonly ContextoDados contexto;
-    private readonly IRepositorioDespesa repositorioDespesa;
-    private readonly IRepositorioCategoria repositorioCategoria;
+    private readonly ContextoDados _contexto;
+    private readonly IRepositorioDespesa _repositorioDespesa;
+    private readonly IRepositorioCategoria _repositorioCategoria;
 
-    public DespesaController()
-    {
-        contexto = new ContextoDados(true);
-        repositorioDespesa = new RepositorioDespesa(contexto);
-        repositorioCategoria = new RepositorioCategoria(contexto);
+    // inversao de controle
+    public DespesaController(ContextoDados contexto, IRepositorioDespesa repositorioDespesa, IRepositorioCategoria repositorioCategoria) {
+        _contexto = contexto;
+        _repositorioDespesa = repositorioDespesa;
+        _repositorioCategoria = repositorioCategoria;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        var registros = repositorioDespesa.SelecionarRegistros();
+        var registros = _repositorioDespesa.SelecionarRegistros();
 
         var visualizarVM = new VisualizarDespesasViewModel(registros);
 
@@ -37,7 +35,7 @@ public class DespesaController : Controller
     [HttpGet("cadastrar")]
     public IActionResult Cadastrar()
     {
-        var categoriasDisponiveis = repositorioCategoria.SelecionarRegistros();
+        var categoriasDisponiveis = _repositorioCategoria.SelecionarRegistros();
 
         var cadastrarVM = new CadastrarDespesaViewModel(categoriasDisponiveis);
 
@@ -48,7 +46,7 @@ public class DespesaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarDespesaViewModel cadastrarVM)
     {
-        var categoriasDisponiveis = repositorioCategoria.SelecionarRegistros();
+        var categoriasDisponiveis = _repositorioCategoria.SelecionarRegistros();
 
         if (!ModelState.IsValid)
         {
@@ -81,7 +79,7 @@ public class DespesaController : Controller
             }
         }
 
-        repositorioDespesa.CadastrarRegistro(despesa);
+        _repositorioDespesa.CadastrarRegistro(despesa);
 
         return RedirectToAction(nameof(Index));
     }
@@ -89,9 +87,9 @@ public class DespesaController : Controller
     [HttpGet("editar/{id:guid}")]
     public ActionResult Editar(Guid id)
     {
-        var categoriasDisponiveis = repositorioCategoria.SelecionarRegistros();
+        var categoriasDisponiveis = _repositorioCategoria.SelecionarRegistros();
 
-        var registroSelecionado = repositorioDespesa.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioDespesa.SelecionarRegistroPorId(id);
 
         var editarVM = new EditarDespesaViewModel(
             id,
@@ -110,7 +108,7 @@ public class DespesaController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Editar(Guid id, EditarDespesaViewModel editarVM)
     {
-        var categoriasDisponiveis = repositorioCategoria.SelecionarRegistros();
+        var categoriasDisponiveis = _repositorioCategoria.SelecionarRegistros();
 
         if (!ModelState.IsValid)
         {
@@ -127,7 +125,7 @@ public class DespesaController : Controller
         var despesaEditada = editarVM.ParaEntidade();
         var categoriasSelecionadas = editarVM.CategoriasSelecionadas;
 
-        var despesaSelecionada = repositorioDespesa.SelecionarRegistroPorId(id);
+        var despesaSelecionada = _repositorioDespesa.SelecionarRegistroPorId(id);
 
         foreach (var categoria in despesaSelecionada.Categorias.ToList())
             despesaSelecionada.RemoverCategoria(categoria);
@@ -147,7 +145,7 @@ public class DespesaController : Controller
             }
         }
 
-        repositorioDespesa.EditarRegistro(id, despesaEditada);
+        _repositorioDespesa.EditarRegistro(id, despesaEditada);
 
         return RedirectToAction(nameof(Index));
     }
@@ -155,7 +153,7 @@ public class DespesaController : Controller
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id)
     {
-        var registroSelecionado = repositorioDespesa.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioDespesa.SelecionarRegistroPorId(id);
 
         var excluirVM = new ExcluirDespesaViewModel(registroSelecionado.Id, registroSelecionado.Descricao);
 
@@ -166,7 +164,7 @@ public class DespesaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult ExcluirConfirmado(Guid id)
     {
-        repositorioDespesa.ExcluirRegistro(id);
+        _repositorioDespesa.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }
@@ -174,7 +172,7 @@ public class DespesaController : Controller
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id)
     {
-        var registroSelecionado = repositorioDespesa.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioDespesa.SelecionarRegistroPorId(id);
 
         var detalhesVM = new DetalhesDespesaViewModel(
             id,

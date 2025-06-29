@@ -1,6 +1,5 @@
 ﻿using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
-using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,18 +9,19 @@ namespace e_Agenda.WebApp.Controllers;
 [Route("contatos")]
 public class ContatoController : Controller 
 {
-    private readonly ContextoDados contexto;
-    private readonly IRepositorioContato repositorioContato;
+    private readonly ContextoDados _contexto;
+    private readonly IRepositorioContato _repositorioContato;
 
-    public ContatoController() {
-        contexto = new ContextoDados(true);
-        repositorioContato = new RepositorioContato(contexto);
+    // inversao de controle
+    public ContatoController(ContextoDados contexto, IRepositorioContato repositorioContato) {
+        _contexto = contexto;
+        _repositorioContato = repositorioContato;
     }
 
 
     [HttpGet]
     public IActionResult Index() {
-        var registros = repositorioContato.SelecionarRegistros();
+        var registros = _repositorioContato.SelecionarRegistros();
 
         var visualizarVM = new VisualizarContatosViewModel(registros);
 
@@ -40,7 +40,7 @@ public class ContatoController : Controller
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarContatoViewModel cadastrarVM) {
-        var registros = repositorioContato.SelecionarRegistros();
+        var registros = _repositorioContato.SelecionarRegistros();
 
         cadastrarVM.FormatarTelefone();
 
@@ -65,7 +65,7 @@ public class ContatoController : Controller
 
         var registro = cadastrarVM.ParaEntidade();
 
-        repositorioContato.CadastrarRegistro(registro);
+        _repositorioContato.CadastrarRegistro(registro);
 
         return RedirectToAction(nameof(Index));
     }
@@ -73,7 +73,7 @@ public class ContatoController : Controller
 
     [HttpGet("editar/{id:guid}")]
     public IActionResult Editar(Guid id) {
-        var registro = repositorioContato.SelecionarRegistroPorId(id);
+        var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
         var editarVM = new EditarContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
 
@@ -84,7 +84,7 @@ public class ContatoController : Controller
     [HttpPost("editar/{id:guid}")]
     [ValidateAntiForgeryToken]
     public IActionResult Editar(Guid id, EditarContatoViewModel editarVM) {
-        var registros = repositorioContato.SelecionarRegistros();
+        var registros = _repositorioContato.SelecionarRegistros();
 
         editarVM.FormatarTelefone();
 
@@ -109,7 +109,7 @@ public class ContatoController : Controller
 
         var registroEditado = editarVM.ParaEntidade();
 
-        repositorioContato.EditarRegistro(id, registroEditado);
+        _repositorioContato.EditarRegistro(id, registroEditado);
 
         return RedirectToAction(nameof(Index));
     }
@@ -117,7 +117,7 @@ public class ContatoController : Controller
 
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id) {
-        var registro = repositorioContato.SelecionarRegistroPorId(id);
+        var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
         var excluirVM = new ExcluirContatoViewModel(registro.Id, registro.Nome);
 
@@ -127,7 +127,7 @@ public class ContatoController : Controller
 
     [HttpPost("excluir/{id:guid}")]
     public IActionResult ExcluirRegistro(Guid id) {
-        repositorioContato.ExcluirRegistro(id);
+        _repositorioContato.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }
@@ -135,7 +135,7 @@ public class ContatoController : Controller
 
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id) {
-        var registro = repositorioContato.SelecionarRegistroPorId(id);
+        var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
         var detalhesVM = new DetalhesContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
 
