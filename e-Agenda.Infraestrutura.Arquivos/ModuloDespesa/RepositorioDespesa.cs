@@ -9,6 +9,6 @@ public class RepositorioDespesa : RepositorioBase<Despesa>, IRepositorioDespesa
 
     protected override List<Despesa> ObterRegistros()
     {
-        return contexto.Despesas;
+        return _contexto.Despesas;
     }
 }

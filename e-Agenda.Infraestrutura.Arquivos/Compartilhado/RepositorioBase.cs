@@ -4,11 +4,11 @@ namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
 public abstract class RepositorioBase<T> where T : EntidadeBase<T>
 {
-    protected ContextoDados contexto;
+    protected ContextoDados _contexto;
     protected List<T> registros = new List<T>();
 
     protected RepositorioBase(ContextoDados contexto) {
-        this.contexto = contexto;
+        _contexto = contexto;
 
         registros = ObterRegistros();
     }
@@ -18,51 +18,40 @@ public abstract class RepositorioBase<T> where T : EntidadeBase<T>
     public void CadastrarRegistro(T novoRegistro) {
         registros.Add(novoRegistro);
 
-        contexto.Salvar();
+        _contexto.Salvar();
     }
 
     public bool EditarRegistro(Guid idRegistro, T registroEditado) {
-        
-        foreach (T item in registros) {
-            
-            if (item.Id == idRegistro) {
-                item.AtualizarRegistro(registroEditado);
+        T? registroSelecionado = SelecionarRegistroPorId(idRegistro);
 
-                contexto.Salvar();
+        if (registroSelecionado is null)
+            return false;
 
-                return true;
-            }
-        }
+        registroSelecionado.AtualizarRegistro(registroEditado);
 
-        return false;
+        _contexto.Salvar();
+
+        return true;           
     }
 
     public bool ExcluirRegistro(Guid idRegistro) {
-        T registroSelecionado = SelecionarRegistroPorId(idRegistro);
+        T? registroSelecionado = SelecionarRegistroPorId(idRegistro);
 
-        if (registroSelecionado != null) {
-            registros.Remove(registroSelecionado);
+        if (registroSelecionado is null)
+            return false;
 
-            contexto.Salvar();
+        registros.Remove(registroSelecionado);
 
-            return true;
-        }
+        _contexto.Salvar();
 
-        return false;
+        return true;
     }
 
     public List<T> SelecionarRegistros() {
         return registros;
     }
 
-    public T SelecionarRegistroPorId(Guid idRegistro) {
-        
-        foreach (T item in registros) {
-            
-            if (item.Id == idRegistro)
-                return item;
-        }
-
-        return null!;
+    public T? SelecionarRegistroPorId(Guid idRegistro) {
+        return registros.Find((x) => x.Id.Equals(idRegistro));
     }
 }

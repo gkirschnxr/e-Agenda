@@ -8,6 +8,6 @@ public class RepositorioContato : RepositorioBase<Contato>, IRepositorioContato
     public RepositorioContato(ContextoDados contexto) : base(contexto) { }
 
     protected override List<Contato> ObterRegistros() {
-        return contexto.Contatos;
+        return _contexto.Contatos;
     }
 }

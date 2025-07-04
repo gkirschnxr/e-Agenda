@@ -6,6 +6,7 @@ using e_Agenda.Infraestrutura.Arquivos.ModuloCategoria;
 using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
 using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
+using e_Agenda.WebApp.ActionFilters;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrutura.ModuloDespesa;
@@ -18,7 +19,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews(options => options.Filters.Add<ValidarModeloAttribute>());
 
         //builder.Services.AddSingleton<ContextoDados>(delegate (IServiceProvider serviceProvider) {
         //    return new ContextoDados(true);        

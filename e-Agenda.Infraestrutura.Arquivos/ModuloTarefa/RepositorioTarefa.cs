@@ -1,91 +1,60 @@
 ﻿using e_Agenda.Dominio.ModuloTarefa;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
-namespace e_Agenda.Infraestrutura.Arquivos.ModuloTarefa
+namespace e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
+
+public class RepositorioTarefa : IRepositorioTarefa
 {
-    public class RepositorioTarefa : IRepositorioTarefa
-    {
-        private readonly ContextoDados contexto;
-        private readonly List<Tarefa> registros;
+    private readonly ContextoDados _contexto;
+    private readonly List<Tarefa> registros;
 
-        public RepositorioTarefa(ContextoDados contexto)
-        {
-            this.contexto = contexto;
-            registros = contexto.Tarefas;
-        }
+    public RepositorioTarefa(ContextoDados contexto) {
+        _contexto = contexto;
+        registros = contexto.Tarefas;
+    }
 
-        public void Cadastrar(Tarefa novaTarefa)
-        {
-            registros.Add(novaTarefa);
+    public void Cadastrar(Tarefa novaTarefa) {
+        registros.Add(novaTarefa);
 
-            contexto.Salvar();
-        }
-        public bool Editar(Guid idTarefa, Tarefa tarefaEditada)
-        {
-            var tarefaSelecionada = SelecionarTarefaPorId(idTarefa);
+        _contexto.Salvar();
+    }
+    public bool Editar(Guid idTarefa, Tarefa tarefaEditada) {
+        var tarefaSelecionada = SelecionarTarefaPorId(idTarefa);
 
-            if (tarefaSelecionada is null)
-                return false;
-
-            tarefaSelecionada.AtualizarRegistro(tarefaEditada);
-
-            return true;
-        }
-
-        public bool Excluir(Guid idTarefa)
-        {
-            var registroSelecionado = SelecionarTarefaPorId(idTarefa);
-
-            if (registroSelecionado != null)
-            {
-                registros.Remove(registroSelecionado);
-
-                contexto.Salvar();
-
-                return true;
-            }
-
+        if (tarefaSelecionada is null)
             return false;
-        }
 
-        public Tarefa? SelecionarTarefaPorId(Guid idTarefa)
-        {
-            foreach (var t in registros)
-            {
-                if (t.Id == idTarefa)
-                    return t;
-            }
+        tarefaSelecionada.AtualizarRegistro(tarefaEditada);
 
-            return null;
-        }
+        return true;
+    }
 
-        public List<Tarefa> SelecionarTarefas() 
-        {
-            return registros;
-        }
+    public bool Excluir(Guid idTarefa) {
+        var registroSelecionado = SelecionarTarefaPorId(idTarefa);
 
-        public List<Tarefa> SelecionarTarefasPendentes() 
-        {
-            var tarefasAtivas = new List<Tarefa>();
+        if (registroSelecionado is null)
+            return false;
 
-            foreach (var item in registros)
-            {
-                if(!item.Concluida)
-                    tarefasAtivas.Add(item);
-            }
-            return tarefasAtivas;
-        }
+        registros.Remove(registroSelecionado);
 
-        public List<Tarefa> SelecionarTarefasConcluidas() 
-        {
-            var tarefasConcluidas = new List<Tarefa>();
+        _contexto.Salvar();
 
-            foreach (var item in registros)
-            {
-                if(item.Concluida)
-                    tarefasConcluidas.Add(item);
-            }
-            return tarefasConcluidas;
-        }
+        return true;
+    }
+
+    public Tarefa? SelecionarTarefaPorId(Guid idTarefa) {
+        return registros.Find(t => t.Id.Equals(idTarefa));
+    }
+
+    public List<Tarefa> SelecionarTarefas() {
+        return registros;
+    }
+
+    public List<Tarefa> SelecionarTarefasPendentes() {
+        return registros.FindAll(x => !x.Concluida);
+    }
+
+    public List<Tarefa> SelecionarTarefasConcluidas() {
+        return registros.FindAll(x => x.Concluida);
     }
 }

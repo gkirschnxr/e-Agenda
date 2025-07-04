@@ -6,6 +6,6 @@ public class RepositorioCompromisso : RepositorioBase<Compromisso>, IRepositorio
 {
     public RepositorioCompromisso(ContextoDados contexto) : base(contexto) { }
     protected override List<Compromisso> ObterRegistros() {
-        return contexto.Compromissos;
+        return _contexto.Compromissos;
     }
 }

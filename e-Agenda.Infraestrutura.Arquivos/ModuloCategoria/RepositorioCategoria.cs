@@ -9,6 +9,6 @@ public class RepositorioCategoria : RepositorioBase<Categoria>, IRepositorioCate
 
     protected override List<Categoria> ObterRegistros()
     {
-        return contexto.Categorias;
+        return _contexto.Categorias;
     }
 }
