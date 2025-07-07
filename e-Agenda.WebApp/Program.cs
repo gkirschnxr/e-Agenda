@@ -7,9 +7,12 @@ using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
 using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
 using e_Agenda.WebApp.ActionFilters;
+using e_Agenda.WebApp.Dependencies;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrutura.ModuloDespesa;
+using Serilog;
+using Serilog.Events;
 
 namespace e_Agenda.WebApp;
 
@@ -19,15 +22,10 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllersWithViews(options => options.Filters.Add<ValidarModeloAttribute>());
-
-        //builder.Services.AddSingleton<ContextoDados>(delegate (IServiceProvider serviceProvider) {
-        //    return new ContextoDados(true);        
-        //});
-
-        //builder.Services.AddSingleton<ContextoDados>((IServiceProvider serviceProvider) => {
-        //    return new ContextoDados(true);        
-        //});        
+        builder.Services.AddControllersWithViews(options => {
+            options.Filters.Add<ValidarModeloAttribute>();
+            options.Filters.Add<LoggingActionAttribute>();
+        });  
         
         builder.Services.AddScoped<ContextoDados>((_) => new ContextoDados(true));
         builder.Services.AddScoped<IRepositorioContato, RepositorioContato>();
@@ -36,7 +34,14 @@ public class Program
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesa>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefa>();
 
+        builder.Services.AddSerilogConfig(builder.Logging);
+
         var app = builder.Build();
+
+        if (!app.Environment.IsDevelopment())
+            app.UseExceptionHandler("/erro");
+        else 
+            app.UseDeveloperExceptionPage();
 
         app.UseAntiforgery();
         app.UseStaticFiles();

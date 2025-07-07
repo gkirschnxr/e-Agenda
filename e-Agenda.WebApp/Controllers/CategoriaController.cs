@@ -54,7 +54,14 @@ public class CategoriaController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        _repositorioCategoria.CadastrarRegistro(entidade);
+        try {
+            _repositorioCategoria.CadastrarRegistro(entidade);
+        } 
+        catch {
+            return View("Home/Index");
+        }
+
+
 
         return RedirectToAction(nameof(Index));
     }
