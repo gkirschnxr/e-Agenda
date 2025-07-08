@@ -17,6 +17,8 @@ public abstract class FormularioContatoViewModel {
     [Required(ErrorMessage = "O campo \"Telefone\" é obrigatório")]
     [RegularExpression(@"^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$", ErrorMessage = "O campo \"Telefone\" deve seguir o formato (00) 9 0000-0000 ou (00) 0000-0000")]
     public string Telefone { get; set; } = string.Empty;
+    public string? Empresa { get; set; }
+    public string? Cargo { get; set; }
 
     public void FormatarTelefone() {
         var numeros = new string(Telefone.Where(char.IsDigit).ToArray());
@@ -30,25 +32,25 @@ public abstract class FormularioContatoViewModel {
 
 public class CadastrarContatoViewModel : FormularioContatoViewModel {
     public CadastrarContatoViewModel() { }
-    public CadastrarContatoViewModel(string nome, string email, string telefone) : this() {
+    public CadastrarContatoViewModel(string nome, string email, string telefone, string? empresa, string? cargo) : this() {
         Nome = nome;
         Email = email;
         Telefone = telefone;
-        //Cargo = cargo;
-        //Empresa = empresa;
+        Cargo = cargo;
+        Empresa = empresa;
     }
 }
 
 public class EditarContatoViewModel : FormularioContatoViewModel {
     public Guid Id { get; set; }
     public EditarContatoViewModel() { }
-    public EditarContatoViewModel(Guid id, string nome, string email, string telefone) : this() {
+    public EditarContatoViewModel(Guid id, string nome, string email, string telefone, string? empresa, string? cargo) : this() {
         Id = id;
         Nome = nome;
         Email = email;
         Telefone = telefone;
-        //Cargo = cargo;
-        //Empresa = empresa;
+        Cargo = cargo;
+        Empresa = empresa;
     }
 }
 
@@ -82,12 +84,16 @@ public class DetalhesContatoViewModel {
     public string Nome { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Telefone { get; set; } = string.Empty;
+    public string? Empresa { get; set; }
+    public string? Cargo { get; set; }
 
-    public DetalhesContatoViewModel(Guid id, string nome, string email, string telefone) {
+    public DetalhesContatoViewModel(Guid id, string nome, string email, string telefone, string? empresa, string? cargo) {
         Id = id;
         Nome = nome;
         Email = email;
         Telefone = telefone;
+        Empresa = empresa;
+        Cargo = cargo;
     }
     public string TelefoneFormatado
     {
