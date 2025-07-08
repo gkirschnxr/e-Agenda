@@ -26,6 +26,19 @@
                     <input asp-for="Telefone" class="form-control" value="@Model.TelefoneFormatado" readonly disabled/>
 
                 </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Empresa)) {
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label for="Empresa" class="control-label fs-5">Empresa:</label>
+                        <input name="Empresa" class="form-control" value="@Model.Empresa" readonly disabled />
+                    </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label for="Cargo" class="control-label fs-5">Cargo:</label>
+                        <input name="Cargo" class="form-control" value="@Model.Cargo" readonly disabled />
+                    </div>
+                }
+
                 <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
                     <a href="/contatos">Voltar para Visualização</a>
                 </div>

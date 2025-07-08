@@ -75,7 +75,7 @@ public class ContatoController : Controller
     public IActionResult Editar(Guid id) {
         var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
-        var editarVM = new EditarContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
+        var editarVM = new EditarContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
 
         return View(editarVM);
     }
@@ -137,7 +137,7 @@ public class ContatoController : Controller
     public IActionResult Detalhes(Guid id) {
         var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
-        var detalhesVM = new DetalhesContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone);
+        var detalhesVM = new DetalhesContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
 
         return View(detalhesVM);
     }

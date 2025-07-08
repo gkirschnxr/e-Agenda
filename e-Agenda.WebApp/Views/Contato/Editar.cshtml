@@ -36,6 +36,21 @@
                         <input asp-for="Telefone" class="form-control" value="@Model.Telefone" />
 
                     </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Empresa" class="control-label fs-5">Empresa:</label>
+                        <input asp-for="Empresa" class="form-control" />
+                        <span asp-validation-for="Empresa" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="form-group d-grid gap-2 mt-3">
+                        <label asp-for="Cargo" class="control-label fs-5">Cargo:</label>
+                        <input asp-for="Cargo" class="form-control" />
+                        <span asp-validation-for="Cargo" class="text-danger"></span>
+
+                    </div>
+
                     <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">
                         <a href="/contatos">Voltar para Visualização</a>
                         <button type="submit" class="btn btn-primary rounded-3 px-5">Confirmar</button>
