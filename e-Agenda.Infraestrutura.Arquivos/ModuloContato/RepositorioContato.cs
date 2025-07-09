@@ -1,5 +1,6 @@
 ﻿using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
+using eAgenda.Infraestrura.Compartilhado;
 
 namespace e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 

@@ -1,34 +1,36 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
-using e_Agenda.Dominio.ModuloContato;
-using e_Agenda.Dominio.ModuloCompromissos;
-using e_Agenda.Dominio.ModuloTarefa;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
+using eAgenda.Dominio.ModuloCompromisso;
+using e_Agenda.Dominio.ModuloContato;
+using e_Agenda.Dominio.ModuloTarefa;
 
-namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
+namespace eAgenda.Infraestrura.Compartilhado;
 
 public class ContextoDados
 {
-    private string pastaArmazenamento = "C:\\temp";
-    private string arquivoArmazenamento = "dados-e-agenda.json";  
+    private string pastaArmazenamento = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "eAgenda"
+    );
+    private string arquivoArmazenamento = "dados.json";
 
-    public List<Contato> Contatos { get; set; }
-    public List<Compromisso> Compromissos { get; set; }
     public List<Tarefa> Tarefas { get; set; }
     public List<Categoria> Categorias { get; set; }
     public List<Despesa> Despesas { get; set; }
+    public List<Contato> Contatos { get; set; }
+    public List<Compromisso> Compromissos { get; set; }
 
     public ContextoDados() {
-        Contatos = new List<Contato>();
-        Compromissos = new List<Compromisso>();
         Tarefas = new List<Tarefa>();
         Categorias = new List<Categoria>();
         Despesas = new List<Despesa>();
+        Contatos = new List<Contato>();
+        Compromissos = new List<Compromisso>();
     }
 
     public ContextoDados(bool carregarDados) : this() {
-        
         if (carregarDados)
             Carregar();
     }
@@ -67,10 +69,10 @@ public class ContextoDados
 
         if (contextoArmazenado == null) return;
 
-        Contatos = contextoArmazenado.Contatos;
-        Compromissos = contextoArmazenado.Compromissos;
         Tarefas = contextoArmazenado.Tarefas;
         Categorias = contextoArmazenado.Categorias;
         Despesas = contextoArmazenado.Despesas;
+        Contatos = contextoArmazenado.Contatos;
+        Compromissos = contextoArmazenado.Compromissos;
     }
 }

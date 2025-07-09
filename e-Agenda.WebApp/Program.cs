@@ -1,19 +1,16 @@
 using e_Agenda.Dominio.ModuloCompromissos;
 using e_Agenda.Dominio.ModuloContato;
 using e_Agenda.Dominio.ModuloTarefa;
-using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using e_Agenda.Infraestrutura.Arquivos.ModuloCategoria;
-using e_Agenda.Infraestrutura.Arquivos.ModuloCompromisso;
 using e_Agenda.Infraestrutura.Arquivos.ModuloContato;
 using e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
 using e_Agenda.WebApp.ActionFilters;
 using e_Agenda.WebApp.Dependencies;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
-using eAgenda.Infraestrutura.BancoDeDados;
+using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.ModuloCompromisso;
 using eAgenda.Infraestrutura.ModuloDespesa;
-using Serilog;
-using Serilog.Events;
 
 namespace e_Agenda.WebApp;
 
@@ -29,7 +26,7 @@ public class Program
         });  
         
         builder.Services.AddScoped<ContextoDados>((_) => new ContextoDados(true));
-        builder.Services.AddScoped<IRepositorioContato, RepositorioContatoBD>();
+        builder.Services.AddScoped<IRepositorioContato, RepositorioContato>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromisso>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesa>();

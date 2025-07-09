@@ -1,4 +1,5 @@
-﻿@model DetalhesCompromissoViewModel
+﻿
+@model DetalhesCompromissoViewModel
 
 @{
     Layout = "_Layout";
@@ -17,8 +18,8 @@
 
                 </div>
                 <div class="form-group d-grid gap-2 mt-3">
-                    <label asp-for="DataOcorrencia" class="control-label fs-5">DataOcorrencia:</label>
-                    <input asp-for="DataOcorrencia" class="form-control" value="@Model.DataOcorrencia" readonly disabled />
+                    <label asp-for="Data" class="control-label fs-5">DataOcorrencia:</label>
+                    <input asp-for="Data" class="form-control" value="@Model.Data" readonly disabled />
 
                 </div>
                 <div class="form-group d-grid gap-2 mt-3">
@@ -38,6 +39,11 @@
                     <input asp-for="Tipo" class="form-control" value="@Model.Tipo" readonly disabled />
 
                 </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Contato)) {
+                    <p class="card-text"><span class="fw-semibold">Contato:</span> @Model.Contato</p>
+                }
+
             </div>
                 
                 <div class="form-group d-flex align-items-center justify-content-end gap-3 mt-5">

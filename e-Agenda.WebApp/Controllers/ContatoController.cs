@@ -2,6 +2,7 @@
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
+using eAgenda.Infraestrura.Compartilhado;
 using Microsoft.AspNetCore.Mvc;
 
 namespace e_Agenda.WebApp.Controllers;

@@ -1,5 +1,6 @@
 ﻿using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using eAgenda.Dominio.ModuloDespesa;
+using eAgenda.Infraestrura.Compartilhado;
 
 namespace eAgenda.Infraestrutura.ModuloDespesa;
 

@@ -1,35 +1,50 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
 using e_Agenda.Dominio.ModuloContato;
 
-namespace e_Agenda.Dominio.ModuloCompromissos;
+namespace eAgenda.Dominio.ModuloCompromisso;
 
 public class Compromisso : EntidadeBase<Compromisso>
 {
     public string Assunto { get; set; } = string.Empty;
-    public DateOnly DataOcorrencia { get; set; }
-    public DateTime HoraInicio { get; set; }
-    public DateTime HoraTermino { get; set; }
-    public enum TipoCompromisso {Presencial,Online}
+    public DateTime Data { get; set; }
+    public TimeSpan HoraInicio { get; set; }
+    public TimeSpan HoraTermino { get; set; }
     public TipoCompromisso Tipo { get; set; }
-    public string? Link { get; set; }
     public string? Local { get; set; }
+    public string? Link { get; set; }
+    public Contato? Contato { get; set; }
 
     public Compromisso() { }
 
-    public Compromisso(string assunto, DateOnly dataOcorrencia, DateTime horaInicio, DateTime horaTermino, TipoCompromisso tipo) {
+    public Compromisso(
+        string assunto,
+        DateTime data,
+        TimeSpan horaInicio,
+        TimeSpan horaTermino,
+        TipoCompromisso tipo,
+        string? local,
+        string? link,
+        Contato? contato = null
+    ) : this() {
         Id = Guid.NewGuid();
         Assunto = assunto;
-        DataOcorrencia = dataOcorrencia;
+        Data = data;
         HoraInicio = horaInicio;
         HoraTermino = horaTermino;
         Tipo = tipo;
+        Local = local;
+        Link = link;
+        Contato = contato;
     }
 
     public override void AtualizarRegistro(Compromisso registroEditado) {
         Assunto = registroEditado.Assunto;
-        DataOcorrencia = registroEditado.DataOcorrencia;
+        Data = registroEditado.Data;
         HoraInicio = registroEditado.HoraInicio;
         HoraTermino = registroEditado.HoraTermino;
         Tipo = registroEditado.Tipo;
+        Local = registroEditado.Local;
+        Link = registroEditado.Link;
+        Contato = registroEditado.Contato;
     }
 }

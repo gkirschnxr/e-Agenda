@@ -1,18 +1,47 @@
-﻿using e_Agenda.Dominio.ModuloCompromissos;
-using e_Agenda.WebApp.Models;
+﻿using e_Agenda.Dominio.ModuloContato;
+using eAgenda.Dominio.ModuloCompromisso;
+using eAgenda.WebApp.Models;
 
-namespace e_Agenda.WebApp.Extensions;
+namespace eAgenda.WebApp.Extensions;
 
 public static class CompromissoExtensions
 {
-    public static Compromisso ParaEntidade(this FormularioCompromissoViewModel formularioVM) {
-        return new Compromisso (formularioVM.Assunto, formularioVM.DataOcorrencia, formularioVM.HoraInicio,
-                               formularioVM.HoraTermino, formularioVM.Tipo);
+    public static Compromisso ParaEntidade(
+        this FormularioCompromissoViewModel formularioVM,
+        List<Contato> contatos
+    ) {
+        Contato? contatoSelecionado = null;
+
+        foreach (var c in contatos) {
+            if (c.Id.Equals(formularioVM.ContatoId)) {
+                contatoSelecionado = c;
+                break;
+            }
+        }
+
+        return new Compromisso(
+            formularioVM.Assunto,
+            formularioVM.Data,
+            formularioVM.HoraInicio,
+            formularioVM.HoraTermino,
+            formularioVM.Tipo,
+            formularioVM.Local,
+            formularioVM.Link,
+            contatoSelecionado
+        );
     }
 
     public static DetalhesCompromissoViewModel ParaDetalhesVM(this Compromisso compromisso) {
-        return new DetalhesCompromissoViewModel(compromisso.Id, compromisso.Assunto, compromisso.DataOcorrencia, compromisso.HoraInicio,
-                                           compromisso.HoraTermino, compromisso.Tipo);
+        return new DetalhesCompromissoViewModel(
+                compromisso.Id,
+                compromisso.Assunto,
+                compromisso.Data,
+                compromisso.HoraInicio,
+                compromisso.HoraTermino,
+                compromisso.Tipo,
+                compromisso.Local,
+                compromisso.Link,
+                compromisso.Contato?.Nome
+        );
     }
-
 }

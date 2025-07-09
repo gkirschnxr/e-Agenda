@@ -1,4 +1,5 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
+using eAgenda.Infraestrura.Compartilhado;
 
 namespace e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 
