@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\e-Agenda.Dominio\e-Agenda.Dominio.csproj" />
     <ProjectReference Include="..\e-Agenda.Infraestrutura.Arquivos\e-Agenda.Infraestrutura.Arquivos.csproj" />
+    <ProjectReference Include="..\eAgenda.Infraestrutura.BancoDeDados\eAgenda.Infraestrutura.BancoDeDados.csproj" />
   </ItemGroup>
 
 </Project>

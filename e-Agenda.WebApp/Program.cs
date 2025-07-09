@@ -10,6 +10,7 @@ using e_Agenda.WebApp.ActionFilters;
 using e_Agenda.WebApp.Dependencies;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
+using eAgenda.Infraestrutura.BancoDeDados;
 using eAgenda.Infraestrutura.ModuloDespesa;
 using Serilog;
 using Serilog.Events;
@@ -28,7 +29,7 @@ public class Program
         });  
         
         builder.Services.AddScoped<ContextoDados>((_) => new ContextoDados(true));
-        builder.Services.AddScoped<IRepositorioContato, RepositorioContato>();
+        builder.Services.AddScoped<IRepositorioContato, RepositorioContatoBD>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromisso>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesa>();
