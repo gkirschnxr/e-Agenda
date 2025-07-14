@@ -1,24 +1,23 @@
 ﻿using e_Agenda.Dominio.ModuloTarefa;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using eAgenda.Infraestrura.Compartilhado;
-
 namespace e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
-
 public class RepositorioTarefa : IRepositorioTarefa
 {
     private readonly ContextoDados _contexto;
-    private readonly List<Tarefa> registros;
+    private readonly List<Tarefa> _registros;
 
     public RepositorioTarefa(ContextoDados contexto) {
         _contexto = contexto;
-        registros = contexto.Tarefas;
+        _registros = contexto.Tarefas;
     }
 
-    public void Cadastrar(Tarefa novaTarefa) {
-        registros.Add(novaTarefa);
+    public void Cadastrar(Tarefa tarefa) {
+        _registros.Add(tarefa);
 
         _contexto.Salvar();
     }
+
     public bool Editar(Guid idTarefa, Tarefa tarefaEditada) {
         var tarefaSelecionada = SelecionarTarefaPorId(idTarefa);
 
@@ -26,6 +25,8 @@ public class RepositorioTarefa : IRepositorioTarefa
             return false;
 
         tarefaSelecionada.AtualizarRegistro(tarefaEditada);
+
+        _contexto.Salvar();
 
         return true;
     }
@@ -36,26 +37,42 @@ public class RepositorioTarefa : IRepositorioTarefa
         if (registroSelecionado is null)
             return false;
 
-        registros.Remove(registroSelecionado);
+        _registros.Remove(registroSelecionado);
 
         _contexto.Salvar();
 
         return true;
     }
 
+    public void AdicionarItem(ItemTarefa item) {
+        _contexto.Salvar();
+    }
+
+    public bool AtualizarItem(ItemTarefa itemAtualizado) {
+        _contexto.Salvar();
+
+        return true;
+    }
+
+    public bool RemoverItem(ItemTarefa item) {
+        _contexto.Salvar();
+
+        return true;
+    }
+
     public Tarefa? SelecionarTarefaPorId(Guid idTarefa) {
-        return registros.Find(t => t.Id.Equals(idTarefa));
+        return _registros.Find(t => t.Id.Equals(idTarefa));
     }
 
     public List<Tarefa> SelecionarTarefas() {
-        return registros;
+        return _registros;
     }
 
     public List<Tarefa> SelecionarTarefasPendentes() {
-        return registros.FindAll(x => !x.Concluida);
+        return _registros.FindAll(t => !t.Concluida);
     }
 
     public List<Tarefa> SelecionarTarefasConcluidas() {
-        return registros.FindAll(x => x.Concluida);
+        return _registros.FindAll(t => t.Concluida);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using e_Agenda.Dominio.ModuloTarefa;
 using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
+using e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using eAgenda.Infraestrura.Compartilhado;
@@ -10,12 +11,10 @@ namespace e_Agenda.WebApp.Controllers;
 [Route("tarefas")]
 public class TarefaController : Controller
 {
-    private readonly ContextoDados _contexto;
     private readonly IRepositorioTarefa _repositorioTarefa;
 
     //inversao de controle
-    public TarefaController(ContextoDados contexto, IRepositorioTarefa repositorioTarefa) {
-        _contexto = contexto;
+    public TarefaController(IRepositorioTarefa repositorioTarefa) {
         _repositorioTarefa = repositorioTarefa;
     }
 
@@ -143,7 +142,7 @@ public class TarefaController : Controller
         else
             tarefaSelecionada.ConcluirTarefa();
 
-        _contexto.Salvar();
+        _repositorioTarefa.Editar(id, tarefaSelecionada);
 
         return RedirectToAction(nameof(Index));
     }
@@ -170,9 +169,9 @@ public class TarefaController : Controller
         if(tarefaSelecionada is null)
             return RedirectToAction(nameof(Index));
 
-        tarefaSelecionada.AdicionarItem(tituloItem);
-        
-        _contexto.Salvar();
+        var itemSelecionado = tarefaSelecionada.AdicionarItem(tituloItem);
+
+        _repositorioTarefa.AdicionarItem(itemSelecionado);
 
         var gerenciarItensViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 
@@ -197,7 +196,7 @@ public class TarefaController : Controller
         else
             tarefaSelecionada.MarcarItemPendente(itemSelecionado);
 
-        _contexto.Salvar();
+        _repositorioTarefa.AtualizarItem(itemSelecionado);
 
         var gerenciarItensViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 
@@ -220,7 +219,7 @@ public class TarefaController : Controller
 
         tarefaSelecionada.RemoverItem(itemSelecionado);
 
-        _contexto.Salvar();
+        _repositorioTarefa.RemoverItem(itemSelecionado);
 
         var gerenciarItenViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 

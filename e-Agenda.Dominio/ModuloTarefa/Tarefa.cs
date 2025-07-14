@@ -1,11 +1,10 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
-using System.ComponentModel.DataAnnotations;
 
 namespace e_Agenda.Dominio.ModuloTarefa
 {
     public class Tarefa : EntidadeBase<Tarefa>
     {
-        public string Titulo { get; set; }
+        public string Titulo { get; set; } = string.Empty;
         public PrioridadeTarefa Prioridade { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime? DataConclusao { get; set; }
@@ -33,7 +32,7 @@ namespace e_Agenda.Dominio.ModuloTarefa
             Itens = new List<ItemTarefa>();
         }
 
-        public Tarefa(string titulo, PrioridadeTarefa prioridade)
+        public Tarefa(string titulo, PrioridadeTarefa prioridade) : this()
         {
             Id = Guid.NewGuid();
             Titulo = titulo;
@@ -54,41 +53,33 @@ namespace e_Agenda.Dominio.ModuloTarefa
             DataConclusao = null;
         }
 
-        public ItemTarefa? ObterItem(Guid idItem) 
-        {
-            foreach (var i in Itens)
-            {
-                if (idItem.Equals(i.Id))
-                    return i;
-            }
-
-            return null;
+        public ItemTarefa? ObterItem(Guid idItem) {
+            return Itens.Find(i => i.Id.Equals(idItem));
         }
 
-        public bool AdicionarItem(string titulo)
-        {
-            var item = new ItemTarefa(titulo);
-
-            foreach (var i in Itens)
-            {
-                if (item.Id == i.Id)
-                    return false;
-            }
+        public ItemTarefa AdicionarItem(string titulo) {
+            var item = new ItemTarefa(titulo, this);
 
             Itens.Add(item);
 
             MarcarPendente();
 
-            return true;
+            return item;
         }
 
-        public ItemTarefa RemoverItem(ItemTarefa item)
+        public ItemTarefa AdicionarItem(ItemTarefa item) {
+            Itens.Add(item);
+
+            return item;
+        }
+
+        public bool RemoverItem(ItemTarefa item)
         {
             Itens.Remove(item);
 
             MarcarPendente();
 
-            return item;
+            return true;
         }
 
         public void ConcluirItem(ItemTarefa item)
@@ -103,14 +94,10 @@ namespace e_Agenda.Dominio.ModuloTarefa
             MarcarPendente();
         }
 
-
         public override void AtualizarRegistro(Tarefa registroEditado)
         {
             Titulo = registroEditado.Titulo;
             Prioridade = registroEditado.Prioridade;
-
-        }
-
-        
+        }        
     }
 }
