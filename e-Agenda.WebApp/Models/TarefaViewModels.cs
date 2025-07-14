@@ -129,7 +129,7 @@ namespace e_Agenda.WebApp.Models
 
             foreach (var i in tarefa.Itens)
             {
-                var itemVM = new ItemTarefaViewModel(i.Id,i.Nome, i.Concluido);
+                var itemVM = new ItemTarefaViewModel(i.Id,i.Titulo, i.Concluido);
 
                 Itens.Add(itemVM);
             }

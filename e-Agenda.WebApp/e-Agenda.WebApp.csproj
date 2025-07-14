@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Tarefa\Editar.cshtml.cs" />
+    <Compile Remove="Views\Tarefa\GerenciarItens.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="log.txt" />
   </ItemGroup>
 

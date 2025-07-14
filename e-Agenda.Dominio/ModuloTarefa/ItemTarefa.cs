@@ -3,16 +3,16 @@
     public class ItemTarefa
     {
         public Guid Id { get; set; }
-        public string Nome { get; set; } = string.Empty;
+        public string Titulo { get; set; } = string.Empty;
         public bool Concluido { get; set; }
         public Tarefa? Tarefa { get; set; }
 
 
         public ItemTarefa() { }
 
-        public ItemTarefa(string nome, Tarefa tarefa) : this() {
+        public ItemTarefa(string titulo, Tarefa tarefa) : this() {
             Id = Guid.NewGuid();
-            Nome = nome;
+            Titulo = titulo;
             Concluido = false;
             Tarefa = tarefa;
         }

@@ -11,6 +11,7 @@ using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrura.Compartilhado;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloCompromisso;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
+using eAgenda.Infraestrutura.BancoDeDados.ModuloTarefa;
 using eAgenda.Infraestrutura.ModuloCompromisso;
 using eAgenda.Infraestrutura.ModuloDespesa;
 
@@ -32,7 +33,7 @@ public class Program
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoBD>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesa>();
-        builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefa>();
+        builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaBD>();
 
         builder.Services.AddSerilogConfig(builder.Logging);
 
