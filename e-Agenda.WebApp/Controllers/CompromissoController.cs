@@ -54,9 +54,9 @@ public class CompromissoController : Controller
             return View(cadastrarVM);
         }
 
-        var despesa = cadastrarVM.ParaEntidade(contatosDisponiveis);
+        var compromisso = cadastrarVM.ParaEntidade(contatosDisponiveis);
 
-        repositorioCompromisso.CadastrarRegistro(despesa);
+        repositorioCompromisso.CadastrarRegistro(compromisso);
 
         return RedirectToAction(nameof(Index));
     }

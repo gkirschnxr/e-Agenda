@@ -9,6 +9,8 @@ using e_Agenda.WebApp.Dependencies;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.BancoDeDados.ModuloCompromisso;
+using eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
 using eAgenda.Infraestrutura.ModuloCompromisso;
 using eAgenda.Infraestrutura.ModuloDespesa;
 
@@ -26,8 +28,8 @@ public class Program
         });  
         
         builder.Services.AddScoped<ContextoDados>((_) => new ContextoDados(true));
-        builder.Services.AddScoped<IRepositorioContato, RepositorioContato>();
-        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromisso>();
+        builder.Services.AddScoped<IRepositorioContato, RepositorioContatoBD>();
+        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoBD>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesa>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefa>();

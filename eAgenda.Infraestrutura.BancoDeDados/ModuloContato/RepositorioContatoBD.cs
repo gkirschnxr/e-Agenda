@@ -1,7 +1,7 @@
 ﻿using e_Agenda.Dominio.ModuloContato;
 using Microsoft.Data.SqlClient;
 
-namespace eAgenda.Infraestrutura.BancoDeDados;
+namespace eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
 
 public class RepositorioContatoBD : IRepositorioContato
 {
