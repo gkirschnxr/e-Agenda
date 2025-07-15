@@ -12,14 +12,14 @@ public class RepositorioTarefa : IRepositorioTarefa
         _registros = contexto.Tarefas;
     }
 
-    public void Cadastrar(Tarefa tarefa) {
+    public void CadastrarRegistro(Tarefa tarefa) {
         _registros.Add(tarefa);
 
         _contexto.Salvar();
     }
 
-    public bool Editar(Guid idTarefa, Tarefa tarefaEditada) {
-        var tarefaSelecionada = SelecionarTarefaPorId(idTarefa);
+    public bool EditarRegistro(Guid idTarefa, Tarefa tarefaEditada) {
+        var tarefaSelecionada = SelecionarRegistroPorId(idTarefa);
 
         if (tarefaSelecionada is null)
             return false;
@@ -31,8 +31,8 @@ public class RepositorioTarefa : IRepositorioTarefa
         return true;
     }
 
-    public bool Excluir(Guid idTarefa) {
-        var registroSelecionado = SelecionarTarefaPorId(idTarefa);
+    public bool ExcluirRegistro(Guid idTarefa) {
+        var registroSelecionado = SelecionarRegistroPorId(idTarefa);
 
         if (registroSelecionado is null)
             return false;
@@ -60,11 +60,11 @@ public class RepositorioTarefa : IRepositorioTarefa
         return true;
     }
 
-    public Tarefa? SelecionarTarefaPorId(Guid idTarefa) {
+    public Tarefa? SelecionarRegistroPorId(Guid idTarefa) {
         return _registros.Find(t => t.Id.Equals(idTarefa));
     }
 
-    public List<Tarefa> SelecionarTarefas() {
+    public List<Tarefa> SelecionarRegistros() {
         return _registros;
     }
 
