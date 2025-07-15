@@ -26,7 +26,7 @@ public class Despesa : EntidadeBase<Despesa>
         FormaPagamento = formaPagamento;
     }
 
-    public void RegistarCategoria(Categoria categoria)
+    public void RegistrarCategoria(Categoria categoria)
     {
         if (Categorias.Contains(categoria))
             return;

@@ -22,7 +22,7 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
         this.conexaoComBanco = conexaoComBanco;
     }
 
-    public void CadastrarRegistro(T novoRegistro) {
+    public virtual void CadastrarRegistro(T novoRegistro) {
         var comandoInsercao = conexaoComBanco.CreateCommand();
         comandoInsercao.CommandText = SqlInserir;
 
@@ -35,7 +35,7 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
         conexaoComBanco.Close();
     }
 
-    public bool EditarRegistro(Guid idRegistro, T registroEditado) {
+    public virtual bool EditarRegistro(Guid idRegistro, T registroEditado) {
         var comandoEdicao = conexaoComBanco.CreateCommand();
         comandoEdicao.CommandText = SqlEditar;
 
@@ -52,7 +52,7 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
         return linhasAfetadas > 0;
     }
 
-    public bool ExcluirRegistro(Guid idRegistro) {
+    public virtual bool ExcluirRegistro(Guid idRegistro) {
         var comandoExclusao = conexaoComBanco.CreateCommand();
         comandoExclusao.CommandText = SqlExcluir;
 
@@ -81,6 +81,8 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
 
         if (leitor.Read())
             registro = ConverterParaRegistro(leitor);
+
+        conexaoComBanco.Close();
 
         return registro;
     }

@@ -71,7 +71,7 @@ public class DespesaController : Controller
                 {
                     if (cs.Equals(cd.Id))
                     {
-                        despesa.RegistarCategoria(cd);
+                        despesa.RegistrarCategoria(cd);
                         break;
                     }
                 }
@@ -133,7 +133,7 @@ public class DespesaController : Controller
                 {
                     if (categoriaDisponivel.Id.Equals(idSelecionado))
                     {
-                        despesaEditada.RegistarCategoria(categoriaDisponivel);
+                        despesaEditada.RegistrarCategoria(categoriaDisponivel);
                         break;
                     }
                 }

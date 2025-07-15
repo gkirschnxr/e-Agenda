@@ -8,8 +8,7 @@ namespace eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
 
 public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorioCategoria
 {
-    public RepositorioCategoriaBD(IDbConnection conexaoComBanco) : base(conexaoComBanco) {
-    }
+    public RepositorioCategoriaBD(IDbConnection conexaoComBanco) : base(conexaoComBanco) { }
 
     protected override string SqlInserir => @"
         INSERT INTO [TBCATEGORIA] ([ID],[TITULO])
@@ -73,17 +72,18 @@ public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorio
 
     private void CarregarDespesas(Categoria categoria) {
         var comandoSelecao = conexaoComBanco.CreateCommand();
-
-        comandoSelecao.AddParameter("CATEGORIA_ID", categoria.Id);
+        comandoSelecao.CommandText = SqlSelecionarDespesasDaCategoria;
 
         conexaoComBanco.Open();
+
+        comandoSelecao.AddParameter("CATEGORIA_ID", categoria.Id);
 
         var leitorCategoria = comandoSelecao.ExecuteReader();
 
         while (leitorCategoria.Read()) {
             var despesa = ConverterParaDespesa(leitorCategoria);
 
-            despesa.RegistarCategoria(categoria);
+            despesa.RegistrarCategoria(categoria);
         }
 
         conexaoComBanco.Close();
