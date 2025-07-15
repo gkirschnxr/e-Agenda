@@ -1,134 +1,50 @@
 ﻿using e_Agenda.Dominio.ModuloContato;
+using eAgenda.Infraestrutura.BancoDeDados.Compartilhado;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
 
-public class RepositorioContatoBD : IRepositorioContato
+public class RepositorioContatoBD : RepositorioBaseBD<Contato>, IRepositorioContato
 {
-    private readonly string connectionString = 
-        "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=eAgendaDB;Integrated Security=True";
+    public RepositorioContatoBD(IDbConnection conexaoComBanco) : base(conexaoComBanco) { }
 
-    public void CadastrarRegistro(Contato novoRegistro) {
-        var sqlInserir = @"INSERT INTO [TBCONTATO] ( [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO] )
-                           VALUES ( @ID, @NOME, @EMAIL, @TELEFONE, @EMPRESA, @CARGO );"
-        ;
+    protected override string SqlInserir => @"
+        INSERT INTO [TBCONTATO] ( [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO] )
+                         VALUES ( @ID, @NOME, @EMAIL, @TELEFONE, @EMPRESA, @CARGO );";
 
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+    protected override string SqlEditar => @"
+        UPDATE [TBCONTATO]
+           SET [NOME] = @NOME,
+               [EMAIL] = @EMAIL,
+               [TELEFONE] = @TELEFONE,
+               [EMPRESA] = @EMPRESA,
+               [CARGO] = @CARGO
+         WHERE [ID] = @ID";
 
-        SqlCommand comandoInsercao = new SqlCommand(sqlInserir, conexaoComBanco);
+    protected override string SqlExcluir => @"
+        DELETE FROM [TBCONTATO]
+              WHERE [ID] = @ID";
 
-        ConfigurarParametrosContato(novoRegistro, comandoInsercao);
+    protected override string SqlSelecionarPorId => @"
+        SELECT [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO]
+          FROM [TBCONTATO]
+         WHERE [ID] = @ID";
 
-        conexaoComBanco.Open();
+    protected override string SqlSelecionarTodos => @"
+        SELECT [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO]
+          FROM [TBCONTATO]";
 
-        comandoInsercao.ExecuteNonQuery();
-
-        conexaoComBanco.Close();
-
+    protected override void ConfigurarParametrosRegistro(Contato entidade, IDbCommand comando) {
+        comando.AddParameter("ID", entidade.Id);
+        comando.AddParameter("NOME", entidade.Nome);
+        comando.AddParameter("EMAIL", entidade.Email);
+        comando.AddParameter("TELEFONE", entidade.Telefone);
+        comando.AddParameter("EMPRESA", entidade.Empresa ?? (object)DBNull.Value);
+        comando.AddParameter("CARGO", entidade.Cargo ?? (object)DBNull.Value);
     }
 
-    public bool EditarRegistro(Guid idRegistro, Contato registroEditado) {
-        var sqlEditar = @"UPDATE [TBCONTATO]
-                          SET [NOME] = @NOME,
-                              [EMAIL] = @EMAIL,
-                              [TELEFONE] = @TELEFONE,
-                              [EMPRESA] = @EMPRESA,
-                              [CARGO] = @CARGO
-                        WHERE [ID] = @ID"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection (connectionString);
-
-        SqlCommand comandoEdicao = new SqlCommand(sqlEditar, conexaoComBanco);
-
-        registroEditado.Id = idRegistro;
-
-        ConfigurarParametrosContato(registroEditado, comandoEdicao);
-
-        conexaoComBanco.Open();
-
-        var linhasAfetadas = comandoEdicao.ExecuteNonQuery();
-
-        conexaoComBanco.Close();
-
-        return linhasAfetadas > 0;
-    }
-
-    public bool ExcluirRegistro(Guid idRegistro) {
-        var sqlExcluir = @"DELETE FROM [TBCONTATO]
-                           WHERE [ID] = @ID"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection (connectionString);
-
-        SqlCommand comandoExclusao = new SqlCommand(sqlExcluir, conexaoComBanco);
-
-        comandoExclusao.Parameters.AddWithValue("ID", idRegistro);
-
-        conexaoComBanco.Open();
-
-        var linhasAfetadas = comandoExclusao.ExecuteNonQuery();
-
-        conexaoComBanco.Close();
-
-        return linhasAfetadas > 0;
-    }
-
-    public Contato? SelecionarRegistroPorId(Guid idRegistro) {
-        var sqlSelecionarPorId = @"SELECT [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO]
-                                   FROM [TBCONTATO]
-                                   WHERE [ID] = @ID"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoSelecao = new SqlCommand(sqlSelecionarPorId, conexaoComBanco);
-
-        comandoSelecao.Parameters.AddWithValue("ID", idRegistro);
-        
-        conexaoComBanco.Open();
-
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
-
-        Contato? contato = null;
-
-        if (leitor.Read())
-            contato = ConverterParaContato(leitor);
-
-        return contato;
-    }
-
-    public List<Contato> SelecionarRegistros() {
-        var sqlSelecionarTodos = @"SELECT [ID],[NOME],[EMAIL],[TELEFONE],[EMPRESA],[CARGO]
-                                   FROM [TBCONTATO]"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        conexaoComBanco.Open();
-
-        SqlCommand comandoSelecao = new SqlCommand(sqlSelecionarTodos, conexaoComBanco);
-
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
-
-        var contatos = new List<Contato>();
-
-        while (leitor.Read()) {
-
-            if (contatos is null)
-                break;
-
-            var contato = ConverterParaContato(leitor);
-
-            contatos.Add(contato);
-        }
-
-        conexaoComBanco.Close();
-
-        return contatos!;
-    }
-
-    private Contato ConverterParaContato(SqlDataReader leitor) {
+    protected override Contato ConverterParaRegistro(IDataReader leitor) {
         var contato = new Contato(
             Convert.ToString(leitor["NOME"])!,
             Convert.ToString(leitor["EMAIL"])!,
@@ -139,14 +55,5 @@ public class RepositorioContatoBD : IRepositorioContato
         contato.Id = Guid.Parse(leitor["ID"].ToString()!);
 
         return contato;
-    }
-
-    private void ConfigurarParametrosContato(Contato contato, SqlCommand comando) {
-        comando.Parameters.AddWithValue("ID", contato.Id);
-        comando.Parameters.AddWithValue("NOME", contato.Nome);
-        comando.Parameters.AddWithValue("EMAIL", contato.Email);
-        comando.Parameters.AddWithValue("TELEFONE", contato.Telefone);
-        comando.Parameters.AddWithValue("EMPRESA", contato.Empresa);
-        comando.Parameters.AddWithValue("CARGO", contato.Cargo);
     }
 }
