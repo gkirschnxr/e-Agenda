@@ -1,6 +1,4 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
-using eAgenda.Dominio.ModuloCategoria;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.Compartilhado;

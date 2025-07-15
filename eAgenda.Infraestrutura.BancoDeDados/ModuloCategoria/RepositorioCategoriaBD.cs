@@ -1,7 +1,6 @@
 ﻿using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrutura.BancoDeDados.Compartilhado;
-using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
