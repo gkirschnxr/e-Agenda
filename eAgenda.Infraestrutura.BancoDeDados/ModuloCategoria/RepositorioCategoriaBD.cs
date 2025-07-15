@@ -1,135 +1,59 @@
 ﻿using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
+using eAgenda.Infraestrutura.BancoDeDados.Compartilhado;
 using Microsoft.Data.SqlClient;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
 
-public class RepositorioCategoriaBD : IRepositorioCategoria
+public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorioCategoria
 {
-    private readonly string connectionString =
-        "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=eAgendaDB;Integrated Security=True";
+    protected override string SqlInserir => @"
+        INSERT INTO [TBCATEGORIA] ([ID],[TITULO])
+                           VALUES (@ID,@TITULO);";
 
-    public void CadastrarRegistro(Categoria novoRegistro) {
-        var sqlInserir = @"INSERT INTO [TBCATEGORIA] ([ID],[TITULO])
-                                              VALUES (@ID,@TITULO);"
-        ;
+    protected override string SqlEditar => @"
+        UPDATE [TBCATEGORIA]
+           SET [TITULO] = @TITULO
+         WHERE [ID] = @ID";
 
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+    protected override string SqlExcluir => @"
+        DELETE FROM [TBCATEGORIA]
+              WHERE [ID] = @ID";
 
-        SqlCommand comandoInsercao = new SqlCommand(sqlInserir, conexaoComBanco);
+    protected override string SqlSelecionarPorId => @"
+        SELECT [ID], [TITULO]
+          FROM [TBCATEGORIA]
+         WHERE [ID] = @ID";
 
-        ConfigurarParametrosCategoria(novoRegistro, comandoInsercao);
+    protected override string SqlSelecionarTodos => @"
+        SELECT [ID], [TITULO]
+          FROM [TBCATEGORIA]";
 
-        conexaoComBanco.Open();
+    protected string SqlSelecionarDespesasDaCategoria => @"
+        SELECT D.[ID], D.[DESCRICAO], D.[VALOR],
+               D.[DATAOCORRENCIA], D.[FORMAPAGAMENTO]
+          FROM [TBDESPESA] AS D INNER JOIN [TBDESPESA_TBCATEGORIA] AS DC
+            ON D.[ID] = DC.[DESPESA_ID]
+         WHERE DC.[CATEGORIA_ID] = @CATEGORIA_ID";
 
-        comandoInsercao.ExecuteNonQuery();
+    public override Categoria? SelecionarRegistroPorId(Guid idRegistro) {
+        var registro = base.SelecionarRegistroPorId(idRegistro);
 
-        conexaoComBanco.Close();
-    }
-
-    public bool EditarRegistro(Guid idRegistro, Categoria registroEditado) {
-        var sqlEditar = @"UPDATE [TBCATEGORIA] SET [TITULO] = @TITULO
-		                                     WHERE [ID] = @ID";
-
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoEdicao = new SqlCommand(sqlEditar, conexaoComBanco);
-
-        registroEditado.Id = idRegistro;
-
-        ConfigurarParametrosCategoria(registroEditado, comandoEdicao);
-
-        conexaoComBanco.Open();
-
-        var linhasAfetadas = comandoEdicao.ExecuteNonQuery();
-
-        conexaoComBanco.Close();
-
-        return linhasAfetadas > 0;
-    }
-
-    public bool ExcluirRegistro(Guid idRegistro) {
-        var sqlExcluir = @"DELETE FROM [TBCATEGORIA]
-		                         WHERE [ID] = @ID"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoExclusao = new SqlCommand(sqlExcluir, conexaoComBanco);
-
-        comandoExclusao.Parameters.AddWithValue("ID", idRegistro);
-
-        conexaoComBanco.Open();
-
-        var linhasAfetadas = comandoExclusao.ExecuteNonQuery();
-
-        conexaoComBanco.Close();
-
-        return linhasAfetadas > 0;
-    }
-
-    public Categoria? SelecionarRegistroPorId(Guid idRegistro) {
-        var sqlSelecionarPorId = @"SELECT [ID],[TITULO]
-	                                 FROM [TBCATEGORIA]
-                                    WHERE [ID] = @ID"
-        ;
-
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoSelecao =
-            new SqlCommand(sqlSelecionarPorId, conexaoComBanco);
-
-        comandoSelecao.Parameters.AddWithValue("ID", idRegistro);
-
-        conexaoComBanco.Open();
-
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
-
-        Categoria? registro = null;
-
-        if (leitor.Read())
-            registro = ConverterParaCategoria(leitor);
-
-        if (registro is not null)
-            CarregarDespesas(registro);
+        if (registro is not null) CarregarDespesas(registro);
 
         return registro;
     }
 
-    public List<Categoria> SelecionarRegistros() {
-        var sqlSelecionarTodos = @"SELECT [ID],[TITULO]
-	                                 FROM [TBCATEGORIA]"
-        ;
+    // SE QUISER VISUALIZAR AS DESPESAS DIRETO NO INDEX DAS CATEGORIAS, UTILIZAR ESSE MÉTODO:
+    //public override List<Categoria> SelecionarRegistros() {
+    //    var registros = base.SelecionarRegistros();
 
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+    //    foreach (var r in registros) {
+    //        CarregarDespesas(r);
+    //    }
 
-        conexaoComBanco.Open();
-
-        SqlCommand comandoSelecao = new SqlCommand(sqlSelecionarTodos, conexaoComBanco);
-
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
-
-        var registros = new List<Categoria>();
-
-        while (leitor.Read()) {
-            var contato = ConverterParaCategoria(leitor);
-
-            registros.Add(contato);
-        }
-
-        conexaoComBanco.Close();
-
-        return registros;
-    }
-
-    private Categoria ConverterParaCategoria(SqlDataReader leitor) {
-        var registro = new Categoria {
-            Id = Guid.Parse(leitor["ID"].ToString()!),
-            Titulo = Convert.ToString(leitor["TITULO"])!
-        };
-
-        return registro;
-    }
+    //    return registros;
+    //}
 
     private Despesa ConverterParaDespesa(SqlDataReader leitor) {
         var registro = new Despesa {
@@ -143,22 +67,11 @@ public class RepositorioCategoriaBD : IRepositorioCategoria
         return registro;
     }
 
-    private void ConfigurarParametrosCategoria(Categoria entidade, SqlCommand comando) {
-        comando.Parameters.AddWithValue("ID", entidade.Id);
-        comando.Parameters.AddWithValue("TITULO", entidade.Titulo);
-    }
-
     private void CarregarDespesas(Categoria categoria) {
-        var sqlSelecionarDespesasDaCategoria = @"SELECT D.[ID], D.[DESCRICAO], D.[VALOR],
-                                                        D.[DATAOCORRENCIA], D.[FORMAPAGAMENTO]
-                                                   FROM [TBDESPESA] AS D INNER JOIN [TBDESPESA_TBCATEGORIA] AS DC
-                                                     ON D.[ID] = DC.[DESPESA_ID]
-                                                  WHERE DC.[CATEGORIA_ID] = @CATEGORIA_ID"
-        ;
 
         SqlConnection conexaoComBanco = new SqlConnection(connectionString);
 
-        SqlCommand comandoSelecao = new SqlCommand(sqlSelecionarDespesasDaCategoria, conexaoComBanco);
+        SqlCommand comandoSelecao = new SqlCommand(SqlSelecionarDespesasDaCategoria, conexaoComBanco);
 
         comandoSelecao.Parameters.AddWithValue("CATEGORIA_ID", categoria.Id);
 
@@ -173,5 +86,19 @@ public class RepositorioCategoriaBD : IRepositorioCategoria
         }
 
         conexaoComBanco.Close();
+    }
+
+    protected override void ConfigurarParametrosRegistro(Categoria entidade, SqlCommand comando) {
+        comando.Parameters.AddWithValue("ID", entidade.Id);
+        comando.Parameters.AddWithValue("TITULO", entidade.Titulo);
+    }
+
+    protected override Categoria ConverterParaRegistro(SqlDataReader leitor) {
+        var registro = new Categoria {
+            Id = Guid.Parse(leitor["ID"].ToString()!),
+            Titulo = Convert.ToString(leitor["TITULO"])!
+        };
+
+        return registro;
     }
 }
