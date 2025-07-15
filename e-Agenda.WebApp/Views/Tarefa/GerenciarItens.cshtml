@@ -3,19 +3,6 @@
 @{
     Layout = "_Layout";
     ViewBag.Titulo = "Gerenciar Itens da Tarefa";
-
-    bool ItensEstaoConcluidos(List<ItemTarefaViewModel> itens)
-    {
-        var itensConcluidos = true;
-
-        foreach (var item in itens)
-        {
-            if (!item.Concluido)
-                itensConcluidos = false;
-        }
-
-        return itensConcluidos;
-    }
 }
 
 <hr />

@@ -7,7 +7,7 @@ public static class CategoriaExtensions
 {
     public static Categoria ParaEntidade(this FormularioCategoriaViewModel formularioVM)
     {
-        return new Categoria(formularioVM.Titulo);
+        return new Categoria(formularioVM.Titulo!);
     }
 
     public static DetalhesCategoriaViewModel ParaDetalhesVM(this Categoria categoria)

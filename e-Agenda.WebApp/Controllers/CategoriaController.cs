@@ -12,12 +12,10 @@ namespace eAgenda.WebApp.Controllers;
 [ValidarModelo]
 public class CategoriaController : Controller
 {
-    private readonly ContextoDados _contexto;
     private readonly IRepositorioCategoria _repositorioCategoria;
 
     // inversao de controle
-    public CategoriaController(ContextoDados contexto, IRepositorioCategoria repositorioCategoria) {
-        _contexto = contexto;
+    public CategoriaController(IRepositorioCategoria repositorioCategoria) {
         _repositorioCategoria = repositorioCategoria;
     }
    
@@ -55,14 +53,7 @@ public class CategoriaController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        try {
-            _repositorioCategoria.CadastrarRegistro(entidade);
-        } 
-        catch {
-            return View("Home/Index");
-        }
-
-
+        _repositorioCategoria.CadastrarRegistro(entidade);
 
         return RedirectToAction(nameof(Index));
     }
@@ -74,7 +65,7 @@ public class CategoriaController : Controller
 
         var editarVM = new EditarCategoriaViewModel(
             id,
-            registroSelecionado.Titulo
+            registroSelecionado!.Titulo
         );
 
         return View(editarVM);
@@ -110,7 +101,7 @@ public class CategoriaController : Controller
     {
         var registroSelecionado = _repositorioCategoria.SelecionarRegistroPorId(id);
 
-        var excluirVM = new ExcluirCategoriaViewModel(registroSelecionado.Id, registroSelecionado.Titulo);
+        var excluirVM = new ExcluirCategoriaViewModel(registroSelecionado!.Id, registroSelecionado.Titulo);
 
         return View(excluirVM);
     }
@@ -131,7 +122,7 @@ public class CategoriaController : Controller
 
         var detalhesVM = new DetalhesCategoriaViewModel(
             id,
-            registroSelecionado.Titulo,
+            registroSelecionado!.Titulo,
             registroSelecionado.Despesas
         );
 

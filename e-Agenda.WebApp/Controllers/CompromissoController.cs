@@ -10,20 +10,17 @@ namespace eAgenda.WebApp.Controllers;
 [Route("compromissos")]
 public class CompromissoController : Controller
 {
-    private readonly IRepositorioCompromisso repositorioCompromisso;
-    private readonly IRepositorioContato repositorioContato;
+    private readonly IRepositorioCompromisso _repositorioCompromisso;
+    private readonly IRepositorioContato _repositorioContato;
 
-    public CompromissoController(
-        IRepositorioCompromisso repositorioCompromisso,
-        IRepositorioContato repositorioContato
-    ) {
-        this.repositorioCompromisso = repositorioCompromisso;
-        this.repositorioContato = repositorioContato;
+    public CompromissoController(IRepositorioCompromisso repositorioCompromisso, IRepositorioContato repositorioContato) {
+        _repositorioCompromisso = repositorioCompromisso;
+        _repositorioContato = repositorioContato;
     }
 
     [HttpGet]
     public IActionResult Index() {
-        var registros = repositorioCompromisso.SelecionarRegistros();
+        var registros = _repositorioCompromisso.SelecionarRegistros();
 
         var visualizarVM = new VisualizarCompromissosViewModel(registros);
 
@@ -32,7 +29,7 @@ public class CompromissoController : Controller
 
     [HttpGet("cadastrar")]
     public IActionResult Cadastrar() {
-        var contatosDisponiveis = repositorioContato.SelecionarRegistros();
+        var contatosDisponiveis = _repositorioContato.SelecionarRegistros();
 
         var cadastrarVM = new CadastrarCompromissoViewModel(contatosDisponiveis);
 
@@ -42,7 +39,7 @@ public class CompromissoController : Controller
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
     public IActionResult Cadastrar(CadastrarCompromissoViewModel cadastrarVM) {
-        var contatosDisponiveis = repositorioContato.SelecionarRegistros();
+        var contatosDisponiveis = _repositorioContato.SelecionarRegistros();
 
         if (!ModelState.IsValid) {
             foreach (var cd in contatosDisponiveis) {
@@ -56,16 +53,16 @@ public class CompromissoController : Controller
 
         var compromisso = cadastrarVM.ParaEntidade(contatosDisponiveis);
 
-        repositorioCompromisso.CadastrarRegistro(compromisso);
+        _repositorioCompromisso.CadastrarRegistro(compromisso);
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet("editar/{id:guid}")]
     public ActionResult Editar(Guid id) {
-        var contatosDisponiveis = repositorioContato.SelecionarRegistros();
+        var contatosDisponiveis = _repositorioContato.SelecionarRegistros();
 
-        var registroSelecionado = repositorioCompromisso.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCompromisso.SelecionarRegistroPorId(id);
 
         if (registroSelecionado is null)
             return RedirectToAction(nameof(Index));
@@ -89,7 +86,7 @@ public class CompromissoController : Controller
     [HttpPost("editar/{id:guid}")]
     [ValidateAntiForgeryToken]
     public ActionResult Editar(Guid id, EditarCompromissoViewModel editarVM) {
-        var contatosDisponiveis = repositorioContato.SelecionarRegistros();
+        var contatosDisponiveis = _repositorioContato.SelecionarRegistros();
 
         if (!ModelState.IsValid) {
             foreach (var cd in contatosDisponiveis) {
@@ -103,14 +100,14 @@ public class CompromissoController : Controller
 
         var compromissoEditado = editarVM.ParaEntidade(contatosDisponiveis);
 
-        repositorioCompromisso.EditarRegistro(id, compromissoEditado);
+        _repositorioCompromisso.EditarRegistro(id, compromissoEditado);
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id) {
-        var registroSelecionado = repositorioCompromisso.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCompromisso.SelecionarRegistroPorId(id);
 
         if (registroSelecionado is null)
             return RedirectToAction(nameof(Index));
@@ -123,12 +120,12 @@ public class CompromissoController : Controller
     [HttpPost("excluir/{id:guid}")]
     [ValidateAntiForgeryToken]
     public IActionResult ExcluirConfirmado(Guid id) {
-        var registroSelecionado = repositorioCompromisso.SelecionarRegistroPorId(id);
+        var registroSelecionado = _repositorioCompromisso.SelecionarRegistroPorId(id);
 
         if (registroSelecionado is null)
             return RedirectToAction(nameof(Index));
 
-        repositorioCompromisso.ExcluirRegistro(id);
+        _repositorioCompromisso.ExcluirRegistro(id);
 
         return RedirectToAction(nameof(Index));
     }

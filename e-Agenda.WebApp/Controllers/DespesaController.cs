@@ -12,13 +12,11 @@ namespace eAgenda.WebApp.Controllers;
 [Route("despesas")]
 public class DespesaController : Controller
 {
-    private readonly ContextoDados _contexto;
     private readonly IRepositorioDespesa _repositorioDespesa;
     private readonly IRepositorioCategoria _repositorioCategoria;
 
     // inversao de controle
-    public DespesaController(ContextoDados contexto, IRepositorioDespesa repositorioDespesa, IRepositorioCategoria repositorioCategoria) {
-        _contexto = contexto;
+    public DespesaController(IRepositorioDespesa repositorioDespesa, IRepositorioCategoria repositorioCategoria) {
         _repositorioDespesa = repositorioDespesa;
         _repositorioCategoria = repositorioCategoria;
     }
@@ -94,7 +92,7 @@ public class DespesaController : Controller
 
         var editarVM = new EditarDespesaViewModel(
             id,
-            registroSelecionado.Descricao,
+            registroSelecionado!.Descricao,
             registroSelecionado.Valor,
             registroSelecionado.DataOcorencia,
             registroSelecionado.FormaPagamento,
@@ -126,10 +124,6 @@ public class DespesaController : Controller
         var despesaEditada = editarVM.ParaEntidade();
         var categoriasSelecionadas = editarVM.CategoriasSelecionadas;
 
-        var despesaSelecionada = _repositorioDespesa.SelecionarRegistroPorId(id);
-
-        foreach (var categoria in despesaSelecionada.Categorias.ToList())
-            despesaSelecionada.RemoverCategoria(categoria);
 
         if (categoriasSelecionadas is not null)
         {
@@ -139,7 +133,7 @@ public class DespesaController : Controller
                 {
                     if (categoriaDisponivel.Id.Equals(idSelecionado))
                     {
-                        despesaSelecionada.RegistarCategoria(categoriaDisponivel);
+                        despesaEditada.RegistarCategoria(categoriaDisponivel);
                         break;
                     }
                 }
@@ -156,7 +150,7 @@ public class DespesaController : Controller
     {
         var registroSelecionado = _repositorioDespesa.SelecionarRegistroPorId(id);
 
-        var excluirVM = new ExcluirDespesaViewModel(registroSelecionado.Id, registroSelecionado.Descricao);
+        var excluirVM = new ExcluirDespesaViewModel(registroSelecionado!.Id, registroSelecionado.Descricao);
 
         return View(excluirVM);
     }
@@ -177,7 +171,7 @@ public class DespesaController : Controller
 
         var detalhesVM = new DetalhesDespesaViewModel(
             id,
-            registroSelecionado.Descricao,
+            registroSelecionado!.Descricao,
             registroSelecionado.Valor,
             registroSelecionado.DataOcorencia,
             registroSelecionado.FormaPagamento,

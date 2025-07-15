@@ -10,12 +10,10 @@ namespace e_Agenda.WebApp.Controllers;
 [Route("contatos")]
 public class ContatoController : Controller 
 {
-    private readonly ContextoDados _contexto;
     private readonly IRepositorioContato _repositorioContato;
 
     // inversao de controle
-    public ContatoController(ContextoDados contexto, IRepositorioContato repositorioContato) {
-        _contexto = contexto;
+    public ContatoController(IRepositorioContato repositorioContato) {
         _repositorioContato = repositorioContato;
     }
 
@@ -76,7 +74,7 @@ public class ContatoController : Controller
     public IActionResult Editar(Guid id) {
         var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
-        var editarVM = new EditarContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
+        var editarVM = new EditarContatoViewModel(id, registro!.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
 
         return View(editarVM);
     }
@@ -120,7 +118,7 @@ public class ContatoController : Controller
     public IActionResult Excluir(Guid id) {
         var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
-        var excluirVM = new ExcluirContatoViewModel(registro.Id, registro.Nome);
+        var excluirVM = new ExcluirContatoViewModel(registro!.Id, registro.Nome);
 
         return View(excluirVM);
     }
@@ -138,7 +136,7 @@ public class ContatoController : Controller
     public IActionResult Detalhes(Guid id) {
         var registro = _repositorioContato.SelecionarRegistroPorId(id);
 
-        var detalhesVM = new DetalhesContatoViewModel(id, registro.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
+        var detalhesVM = new DetalhesContatoViewModel(id, registro!.Nome, registro.Email, registro.Telefone, registro.Empresa, registro.Cargo);
 
         return View(detalhesVM);
     }
