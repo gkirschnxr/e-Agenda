@@ -10,6 +10,8 @@ using eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloTarefa;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloDespesa;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
+using System.Data;
+using Microsoft.Data.SqlClient;
 
 namespace e_Agenda.WebApp;
 
@@ -22,7 +24,13 @@ public class Program
         builder.Services.AddControllersWithViews(options => {
             options.Filters.Add<ValidarModeloAttribute>();
             options.Filters.Add<LoggingActionAttribute>();
-        });  
+        });
+
+        builder.Services.AddScoped<IDbConnection>(provider => {
+            const string connectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=eAgendaDB;Integrated Security=True";
+            
+            return new SqlConnection(connectionString);
+        });
         
         builder.Services.AddScoped<IRepositorioContato, RepositorioContatoBD>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoBD>();

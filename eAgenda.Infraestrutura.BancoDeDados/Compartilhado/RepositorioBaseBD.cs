@@ -1,26 +1,30 @@
 ﻿using e_Agenda.Dominio.Compartilhado;
 using eAgenda.Dominio.ModuloCategoria;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.Compartilhado;
+
 public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
 {
-    protected readonly string connectionString =
-        "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=eAgendaDB;Integrated Security=True";
-
-    protected abstract void ConfigurarParametrosRegistro(T entidade, SqlCommand comando);
-    protected abstract T ConverterParaRegistro(SqlDataReader leitor);
     protected abstract string SqlInserir { get; }
     protected abstract string SqlEditar { get; }
     protected abstract string SqlExcluir { get; }
     protected abstract string SqlSelecionarPorId { get; }
     protected abstract string SqlSelecionarTodos { get; }
 
+    protected abstract void ConfigurarParametrosRegistro(T entidade, IDbCommand comando);
+    protected abstract T ConverterParaRegistro(IDataReader leitor);
+
+
+    protected IDbConnection conexaoComBanco;
+    protected RepositorioBaseBD(IDbConnection conexaoComBanco) {
+        this.conexaoComBanco = conexaoComBanco;
+    }
 
     public void CadastrarRegistro(T novoRegistro) {
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoInsercao = new SqlCommand(SqlInserir, conexaoComBanco);
+        var comandoInsercao = conexaoComBanco.CreateCommand();
+        comandoInsercao.CommandText = SqlInserir;
 
         ConfigurarParametrosRegistro(novoRegistro, comandoInsercao);
 
@@ -32,9 +36,8 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
     }
 
     public bool EditarRegistro(Guid idRegistro, T registroEditado) {
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoEdicao = new SqlCommand(SqlEditar, conexaoComBanco);
+        var comandoEdicao = conexaoComBanco.CreateCommand();
+        comandoEdicao.CommandText = SqlEditar;
 
         registroEditado.Id = idRegistro;
 
@@ -50,11 +53,10 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
     }
 
     public bool ExcluirRegistro(Guid idRegistro) {
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+        var comandoExclusao = conexaoComBanco.CreateCommand();
+        comandoExclusao.CommandText = SqlExcluir;
 
-        SqlCommand comandoExclusao = new SqlCommand(SqlExcluir, conexaoComBanco);
-
-        comandoExclusao.Parameters.AddWithValue("ID", idRegistro);
+        comandoExclusao.AddParameter("ID", idRegistro);
 
         conexaoComBanco.Open();
 
@@ -66,16 +68,14 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
     }
 
     public virtual T? SelecionarRegistroPorId(Guid idRegistro) {
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+        var comandoSelecao = conexaoComBanco.CreateCommand();
+        comandoSelecao.CommandText = SqlSelecionarPorId;
 
-        SqlCommand comandoSelecao =
-            new SqlCommand(SqlSelecionarPorId, conexaoComBanco);
-
-        comandoSelecao.Parameters.AddWithValue("ID", idRegistro);
+        comandoSelecao.AddParameter("ID", idRegistro);
 
         conexaoComBanco.Open();
 
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
+        var leitor = comandoSelecao.ExecuteReader();
 
         T? registro = null;
 
@@ -86,13 +86,12 @@ public abstract class RepositorioBaseBD<T> where T : EntidadeBase<T>
     }
 
     public virtual List<T> SelecionarRegistros() {
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
+        var comandoSelecao = conexaoComBanco.CreateCommand();
+        comandoSelecao.CommandText = SqlSelecionarTodos;
 
         conexaoComBanco.Open();
 
-        SqlCommand comandoSelecao = new SqlCommand(SqlSelecionarTodos, conexaoComBanco);
-
-        SqlDataReader leitor = comandoSelecao.ExecuteReader();
+        var leitor = comandoSelecao.ExecuteReader();
 
         var registros = new List<T>();
 

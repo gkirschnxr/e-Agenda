@@ -2,11 +2,15 @@
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrutura.BancoDeDados.Compartilhado;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
 
 public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorioCategoria
 {
+    public RepositorioCategoriaBD(IDbConnection conexaoComBanco) : base(conexaoComBanco) {
+    }
+
     protected override string SqlInserir => @"
         INSERT INTO [TBCATEGORIA] ([ID],[TITULO])
                            VALUES (@ID,@TITULO);";
@@ -55,7 +59,7 @@ public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorio
     //    return registros;
     //}
 
-    private Despesa ConverterParaDespesa(SqlDataReader leitor) {
+    private Despesa ConverterParaDespesa(IDataReader leitor) {
         var registro = new Despesa {
             Id = Guid.Parse(leitor["ID"].ToString()!),
             Descricao = Convert.ToString(leitor["DESCRICAO"])!,
@@ -68,16 +72,13 @@ public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorio
     }
 
     private void CarregarDespesas(Categoria categoria) {
+        var comandoSelecao = conexaoComBanco.CreateCommand();
 
-        SqlConnection conexaoComBanco = new SqlConnection(connectionString);
-
-        SqlCommand comandoSelecao = new SqlCommand(SqlSelecionarDespesasDaCategoria, conexaoComBanco);
-
-        comandoSelecao.Parameters.AddWithValue("CATEGORIA_ID", categoria.Id);
+        comandoSelecao.AddParameter("CATEGORIA_ID", categoria.Id);
 
         conexaoComBanco.Open();
 
-        SqlDataReader leitorCategoria = comandoSelecao.ExecuteReader();
+        var leitorCategoria = comandoSelecao.ExecuteReader();
 
         while (leitorCategoria.Read()) {
             var despesa = ConverterParaDespesa(leitorCategoria);
@@ -88,12 +89,12 @@ public class RepositorioCategoriaBD : RepositorioBaseBD<Categoria>, IRepositorio
         conexaoComBanco.Close();
     }
 
-    protected override void ConfigurarParametrosRegistro(Categoria entidade, SqlCommand comando) {
-        comando.Parameters.AddWithValue("ID", entidade.Id);
-        comando.Parameters.AddWithValue("TITULO", entidade.Titulo);
+    protected override void ConfigurarParametrosRegistro(Categoria entidade, IDbCommand comando) {
+        comando.AddParameter("ID", entidade.Id);
+        comando.AddParameter("TITULO", entidade.Titulo);
     }
 
-    protected override Categoria ConverterParaRegistro(SqlDataReader leitor) {
+    protected override Categoria ConverterParaRegistro(IDataReader leitor) {
         var registro = new Categoria {
             Id = Guid.Parse(leitor["ID"].ToString()!),
             Titulo = Convert.ToString(leitor["TITULO"])!
