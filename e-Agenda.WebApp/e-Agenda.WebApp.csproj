@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>e_Agenda.WebApp</RootNamespace>
+    <UserSecretsId>4b3c0a4d-052c-4452-922e-595405e880ab</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.18">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
   </ItemGroup>
 
@@ -33,6 +39,7 @@
     <ProjectReference Include="..\e-Agenda.Dominio\e-Agenda.Dominio.csproj" />
     <ProjectReference Include="..\e-Agenda.Infraestrutura.Arquivos\e-Agenda.Infraestrutura.Arquivos.csproj" />
     <ProjectReference Include="..\eAgenda.Infraestrutura.BancoDeDados\eAgenda.Infraestrutura.BancoDeDados.csproj" />
+    <ProjectReference Include="..\eAgenda.Infraestrutura.ORM\eAgenda.Infraestrutura.ORM.csproj" />
   </ItemGroup>
 
 </Project>

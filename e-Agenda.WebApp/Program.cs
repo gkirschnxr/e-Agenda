@@ -12,6 +12,8 @@ using eAgenda.Infraestrutura.BancoDeDados.ModuloDespesa;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using eAgenda.Infraestrutura.ORM.Compartilhado;
 
 namespace e_Agenda.WebApp;
 
@@ -38,6 +40,7 @@ public class Program
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaBD>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaBD>();
 
+        builder.Services.AddEntityFrameworkConfig(builder.Configuration);
         builder.Services.AddSerilogConfig(builder.Logging);
 
         var app = builder.Build();
