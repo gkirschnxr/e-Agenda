@@ -14,6 +14,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using eAgenda.Infraestrutura.ORM.Compartilhado;
+using eAgenda.Infraestrutura.ORM.ModuloContato;
 
 namespace e_Agenda.WebApp;
 
@@ -34,7 +35,7 @@ public class Program
             return new SqlConnection(connectionString);
         });
         
-        builder.Services.AddScoped<IRepositorioContato, RepositorioContatoBD>();
+        builder.Services.AddScoped<IRepositorioContato, RepositorioContatoORM>();
         builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoBD>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaBD>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaBD>();

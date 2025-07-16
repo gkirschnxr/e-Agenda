@@ -3,6 +3,7 @@ using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
 using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.ORM.Compartilhado;
 using Microsoft.AspNetCore.Mvc;
 
 namespace e_Agenda.WebApp.Controllers;
@@ -10,10 +11,12 @@ namespace e_Agenda.WebApp.Controllers;
 [Route("contatos")]
 public class ContatoController : Controller 
 {
+    private readonly eAgendaDbContext _dbContext;
     private readonly IRepositorioContato _repositorioContato;
 
     // inversao de controle
-    public ContatoController(IRepositorioContato repositorioContato) {
+    public ContatoController(eAgendaDbContext dbContext, IRepositorioContato repositorioContato) {
+        _dbContext = dbContext;
         _repositorioContato = repositorioContato;
     }
 
@@ -64,7 +67,22 @@ public class ContatoController : Controller
 
         var registro = cadastrarVM.ParaEntidade();
 
-        _repositorioContato.CadastrarRegistro(registro);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioContato.CadastrarRegistro(registro);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+        } 
+        catch (Exception) {
+            transacao.Rollback();
+            
+            throw;
+        }
+
+        
 
         return RedirectToAction(nameof(Index));
     }
@@ -108,7 +126,20 @@ public class ContatoController : Controller
 
         var registroEditado = editarVM.ParaEntidade();
 
-        _repositorioContato.EditarRegistro(id, registroEditado);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioContato.EditarRegistro(id, registroEditado);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+        } 
+        catch (Exception) { 
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -126,7 +157,21 @@ public class ContatoController : Controller
 
     [HttpPost("excluir/{id:guid}")]
     public IActionResult ExcluirRegistro(Guid id) {
-        _repositorioContato.ExcluirRegistro(id);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioContato.ExcluirRegistro(id);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } 
+        catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
