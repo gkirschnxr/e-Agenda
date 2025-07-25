@@ -1,7 +1,6 @@
-﻿using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
-using e_Agenda.WebApp.ActionFilters;
+﻿using e_Agenda.WebApp.ActionFilters;
 using eAgenda.Dominio.ModuloCategoria;
-using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.ORM.Compartilhado;
 using eAgenda.WebApp.Extensions;
 using eAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +11,15 @@ namespace eAgenda.WebApp.Controllers;
 [ValidarModelo]
 public class CategoriaController : Controller
 {
+    private readonly eAgendaDbContext _dbContext;
     private readonly IRepositorioCategoria _repositorioCategoria;
 
     // inversao de controle
-    public CategoriaController(IRepositorioCategoria repositorioCategoria) {
+    public CategoriaController(eAgendaDbContext dbContext, IRepositorioCategoria repositorioCategoria) {
+        _dbContext = dbContext;
         _repositorioCategoria = repositorioCategoria;
     }
-   
+
     [HttpGet]
     public IActionResult Index()
     {
@@ -53,7 +54,20 @@ public class CategoriaController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        _repositorioCategoria.CadastrarRegistro(entidade);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioCategoria.CadastrarRegistro(entidade);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -91,7 +105,20 @@ public class CategoriaController : Controller
 
         var entidadeEditada = editarVM.ParaEntidade();
 
-        _repositorioCategoria.EditarRegistro(id, entidadeEditada);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioCategoria.EditarRegistro(id, entidadeEditada);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -108,9 +135,22 @@ public class CategoriaController : Controller
 
     [HttpPost("excluir/{id:guid}")]
     [ValidateAntiForgeryToken]
-    public IActionResult ExcluirConfirmado(Guid id)
-    {
-        _repositorioCategoria.ExcluirRegistro(id);
+    public IActionResult ExcluirConfirmado(Guid id) {
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioCategoria.ExcluirRegistro(id);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
+
 
         return RedirectToAction(nameof(Index));
     }

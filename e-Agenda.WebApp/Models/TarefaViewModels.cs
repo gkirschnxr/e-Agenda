@@ -11,7 +11,7 @@ namespace e_Agenda.WebApp.Models
         [Required(ErrorMessage = "O campo \"Titulo\" é obrigatório.")]
         [MinLength(2, ErrorMessage = "O campo \"Titulo\" precisa conter ao menos 3 caracteres.")]
         [MaxLength(100, ErrorMessage = "O campo \"Titulo\" precisa conter no máximo 100 caracteres.")]
-        public string Titulo { get; set; }
+        public string? Titulo { get; set; }
 
         public PrioridadeTarefa Prioridade { get; set; }
     }
@@ -116,8 +116,8 @@ namespace e_Agenda.WebApp.Models
 
     public class GerenciarItensTarefaViewModel
     {
-        public DetalhesTarefaViewModel Tarefa { get; set; }
-        public List<ItemTarefaViewModel> Itens { get; set; }
+        public DetalhesTarefaViewModel? Tarefa { get; set; }
+        public List<ItemTarefaViewModel>? Itens { get; set; }
 
         public GerenciarItensTarefaViewModel(){}
 

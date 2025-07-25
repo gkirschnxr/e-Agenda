@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eAgenda.Infraestrutura.ORM.Compartilhado;
 
@@ -11,9 +12,11 @@ using eAgenda.Infraestrutura.ORM.Compartilhado;
 namespace eAgenda.Infraestrutura.ORM.Migrations
 {
     [DbContext(typeof(eAgendaDbContext))]
-    partial class eAgendaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250725195116_Add_DbCategoria")]
+    partial class Add_DbCategoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

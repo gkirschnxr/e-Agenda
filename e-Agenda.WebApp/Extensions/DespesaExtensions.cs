@@ -8,7 +8,7 @@ public static class DespesaExtensions
     public static Despesa ParaEntidade(this FormularioDespesaViewModel formularioVM)
     {
         return new Despesa(
-            formularioVM.Descricao,
+            formularioVM.Descricao!,
             formularioVM.Valor,
             formularioVM.DataOcorrencia,
             formularioVM.FormaPagamento
