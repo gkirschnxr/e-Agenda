@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace eAgenda.Infraestrutura.ORM.Compartilhado;
 public abstract class RepositorioBaseORM<T> where T : EntidadeBase<T>
 {
-    private readonly DbSet<T> _contexto;
+    protected readonly DbSet<T> _contexto;
 
     protected RepositorioBaseORM(eAgendaDbContext contexto) {
         _contexto = contexto.Set<T>();
@@ -35,11 +35,11 @@ public abstract class RepositorioBaseORM<T> where T : EntidadeBase<T>
         return true;
     }
 
-    public T? SelecionarRegistroPorId(Guid idRegistro) {
+    public virtual T? SelecionarRegistroPorId(Guid idRegistro) {
         return _contexto.FirstOrDefault(x => x.Id.Equals(idRegistro));
     }
 
-    public List<T> SelecionarRegistros() {
+    public virtual List<T> SelecionarRegistros() {
         return _contexto.ToList();
     }
 }

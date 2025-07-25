@@ -5,16 +5,13 @@ using e_Agenda.WebApp.ActionFilters;
 using e_Agenda.WebApp.Dependencies;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
-using eAgenda.Infraestrutura.BancoDeDados.ModuloCompromisso;
-using eAgenda.Infraestrutura.BancoDeDados.ModuloContato;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloTarefa;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloDespesa;
 using eAgenda.Infraestrutura.BancoDeDados.ModuloCategoria;
 using System.Data;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using eAgenda.Infraestrutura.ORM.Compartilhado;
 using eAgenda.Infraestrutura.ORM.ModuloContato;
+using eAgenda.Infraestrutura.ORM.ModuloCompromisso;
 
 namespace e_Agenda.WebApp;
 
@@ -36,7 +33,7 @@ public class Program
         });
         
         builder.Services.AddScoped<IRepositorioContato, RepositorioContatoORM>();
-        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoBD>();
+        builder.Services.AddScoped<IRepositorioCompromisso, RepositorioCompromissoORM>();
         builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaBD>();
         builder.Services.AddScoped<IRepositorioDespesa, RepositorioDespesaBD>();
         builder.Services.AddScoped<IRepositorioTarefa, RepositorioTarefaBD>();
