@@ -2,21 +2,25 @@
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloDespesa;
 using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.ORM.Compartilhado;
 using eAgenda.WebApp.Extensions;
 using eAgenda.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace eAgenda.WebApp.Controllers;
 
 [Route("despesas")]
 public class DespesaController : Controller
 {
+    private readonly eAgendaDbContext _dbContext;
     private readonly IRepositorioDespesa _repositorioDespesa;
     private readonly IRepositorioCategoria _repositorioCategoria;
 
     // inversao de controle
-    public DespesaController(IRepositorioDespesa repositorioDespesa, IRepositorioCategoria repositorioCategoria) {
+    public DespesaController(eAgendaDbContext dbContext, IRepositorioDespesa repositorioDespesa, IRepositorioCategoria repositorioCategoria) {
+        _dbContext = dbContext;
         _repositorioDespesa = repositorioDespesa;
         _repositorioCategoria = repositorioCategoria;
     }
@@ -78,7 +82,20 @@ public class DespesaController : Controller
             }
         }
 
-        _repositorioDespesa.CadastrarRegistro(despesa);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioDespesa.CadastrarRegistro(despesa);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
@@ -103,6 +120,7 @@ public class DespesaController : Controller
         return View(editarVM);
     }
 
+
     [HttpPost("editar/{id:guid}")]
     [ValidateAntiForgeryToken]
     public ActionResult Editar(Guid id, EditarDespesaViewModel editarVM)
@@ -124,6 +142,7 @@ public class DespesaController : Controller
         var despesaEditada = editarVM.ParaEntidade();
         var categoriasSelecionadas = editarVM.CategoriasSelecionadas;
 
+        despesaEditada.LimparCategorias();
 
         if (categoriasSelecionadas is not null)
         {
@@ -140,10 +159,31 @@ public class DespesaController : Controller
             }
         }
 
-        _repositorioDespesa.EditarRegistro(id, despesaEditada);
+        var local = _dbContext.ChangeTracker.Entries<Despesa>()
+            .FirstOrDefault(e => e.Entity.Id == despesaEditada.Id);
+
+        if (local != null) {
+            _dbContext.Entry(local.Entity).State = EntityState.Detached;
+        }
+
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioDespesa.EditarRegistro(id, despesaEditada);              
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
+
 
     [HttpGet("excluir/{id:guid}")]
     public IActionResult Excluir(Guid id)
@@ -155,14 +195,29 @@ public class DespesaController : Controller
         return View(excluirVM);
     }
 
+
     [HttpPost("excluir/{id:guid}")]
     [ValidateAntiForgeryToken]
     public IActionResult ExcluirConfirmado(Guid id)
     {
-        _repositorioDespesa.ExcluirRegistro(id);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioDespesa.ExcluirRegistro(id);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
+
 
     [HttpGet("detalhes/{id:guid}")]
     public IActionResult Detalhes(Guid id)

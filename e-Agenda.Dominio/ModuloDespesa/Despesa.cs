@@ -44,6 +44,10 @@ public class Despesa : EntidadeBase<Despesa>
         Categorias.Remove(categoria);
     }
 
+    public void LimparCategorias() {
+        Categorias?.Clear();
+    }
+
     public override void AtualizarRegistro(Despesa registroEditado)
     {
         Descricao = registroEditado.Descricao;

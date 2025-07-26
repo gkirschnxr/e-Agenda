@@ -50,7 +50,7 @@ public class CadastrarDespesaViewModel : FormularioDespesaViewModel
 
 public class EditarDespesaViewModel : FormularioDespesaViewModel
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; }
 
     public EditarDespesaViewModel()
     {
