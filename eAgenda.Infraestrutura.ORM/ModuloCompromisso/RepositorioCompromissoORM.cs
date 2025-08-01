@@ -1,7 +1,6 @@
 ﻿using e_Agenda.Dominio.ModuloCompromissos;
 using eAgenda.Dominio.ModuloCompromisso;
 using eAgenda.Infraestrutura.ORM.Compartilhado;
-using eAgenda.Infraestrutura.ORM.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace eAgenda.Infraestrutura.ORM.ModuloCompromisso;

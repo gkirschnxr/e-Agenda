@@ -230,7 +230,7 @@ namespace eAgenda.Infraestrutura.ORM.Migrations
                     b.HasOne("e_Agenda.Dominio.ModuloTarefa.Tarefa", "Tarefa")
                         .WithMany("Itens")
                         .HasForeignKey("TarefaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tarefa");

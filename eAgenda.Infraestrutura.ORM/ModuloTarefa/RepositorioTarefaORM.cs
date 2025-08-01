@@ -53,4 +53,16 @@ public class RepositorioTarefaORM : RepositorioBaseORM<Tarefa>, IRepositorioTare
             .ToList();
     }
 
+
+    public override Tarefa? SelecionarRegistroPorId(Guid idRegistro) {
+        return _contexto
+            .Include(t => t.Itens)
+            .FirstOrDefault(t => t.Id.Equals(idRegistro));
+    }
+
+    public override List<Tarefa> SelecionarRegistros() {
+        return _contexto
+            .Include(t => t.Itens)
+            .ToList();
+    }
 }

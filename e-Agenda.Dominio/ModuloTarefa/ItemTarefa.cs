@@ -10,8 +10,8 @@
         public Guid TarefaId { get; set; }
         public Tarefa? Tarefa { get; set; }
 
-
-        public ItemTarefa() { }
+        public ItemTarefa() { 
+        }
 
         public ItemTarefa(string titulo, Tarefa tarefa) : this() {
             Id = Guid.NewGuid();

@@ -12,8 +12,8 @@ using eAgenda.Infraestrutura.ORM.Compartilhado;
 namespace eAgenda.Infraestrutura.ORM.Migrations
 {
     [DbContext(typeof(eAgendaDbContext))]
-    [Migration("20250801182442_Add_TBTarefa")]
-    partial class Add_TBTarefa
+    [Migration("20250801191915_ConfigInicial")]
+    partial class ConfigInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -233,7 +233,7 @@ namespace eAgenda.Infraestrutura.ORM.Migrations
                     b.HasOne("e_Agenda.Dominio.ModuloTarefa.Tarefa", "Tarefa")
                         .WithMany("Itens")
                         .HasForeignKey("TarefaId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Tarefa");
