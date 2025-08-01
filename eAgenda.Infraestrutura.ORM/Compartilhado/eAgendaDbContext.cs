@@ -1,4 +1,5 @@
 ﻿using e_Agenda.Dominio.ModuloContato;
+using e_Agenda.Dominio.ModuloTarefa;
 using eAgenda.Dominio.ModuloCategoria;
 using eAgenda.Dominio.ModuloCompromisso;
 using eAgenda.Dominio.ModuloDespesa;
@@ -12,6 +13,8 @@ public class eAgendaDbContext : DbContext
 {
     public DbSet<Contato> Contatos { get; set; }
     public DbSet<Compromisso> Compromissos { get; set; }
+    public DbSet<Tarefa> Tarefas { get; set; }
+    public DbSet<ItemTarefa> ItemTarefas { get; set; }
 
     /* o que deveria ser implementado antes da criação das tabelas:
 

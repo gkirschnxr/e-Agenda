@@ -1,32 +1,32 @@
 ﻿using e_Agenda.Dominio.ModuloTarefa;
-using e_Agenda.Infraestrutura.Arquivos.Compartilhado;
-using e_Agenda.Infraestrutura.Arquivos.ModuloTarefa;
 using e_Agenda.WebApp.Extensions;
 using e_Agenda.WebApp.Models;
-using eAgenda.Infraestrura.Compartilhado;
+using eAgenda.Infraestrutura.ORM.Compartilhado;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient.Diagnostics;
 
 namespace e_Agenda.WebApp.Controllers;
 
 [Route("tarefas")]
 public class TarefaController : Controller
 {
+    private readonly eAgendaDbContext _dbContext;
     private readonly IRepositorioTarefa _repositorioTarefa;
 
     //inversao de controle
-    public TarefaController(IRepositorioTarefa repositorioTarefa) {
+    public TarefaController(eAgendaDbContext dbContext, IRepositorioTarefa repositorioTarefa) {
+        _dbContext = dbContext;
         _repositorioTarefa = repositorioTarefa;
     }
 
     [HttpGet]
-    public IActionResult Index(string? status)
-    {
+    public IActionResult Index(string? status) {
         List<Tarefa> registros;
 
-        switch (status) 
-        {
-            case "pendentes": registros = _repositorioTarefa.SelecionarTarefasPendentes();break;
-            case "concluidas": registros = _repositorioTarefa.SelecionarTarefasConcluidas();break;
+        switch (status) {
+            case "pendentes": registros = _repositorioTarefa.SelecionarTarefasPendentes(); break;
+            case "concluidas": registros = _repositorioTarefa.SelecionarTarefasConcluidas(); break;
             default: registros = _repositorioTarefa.SelecionarRegistros(); break;
         }
         var visualizarVM = new VisualizarTarefaViewModel(registros);
@@ -35,8 +35,7 @@ public class TarefaController : Controller
     }
 
     [HttpGet("cadastrar")]
-    public IActionResult Cadastrar()
-    {
+    public IActionResult Cadastrar() {
         var cadastrarVM = new CadastrarTarefaViewModel();
 
         return View(cadastrarVM);
@@ -44,14 +43,11 @@ public class TarefaController : Controller
 
     [HttpPost("cadastrar")]
     [ValidateAntiForgeryToken]
-    public IActionResult Cadastrar(CadastrarTarefaViewModel cadastrarVM)
-    {
+    public IActionResult Cadastrar(CadastrarTarefaViewModel cadastrarVM) {
         var registros = _repositorioTarefa.SelecionarRegistros();
 
-        foreach (var item in registros)
-        {
-            if (item.Titulo.Equals(cadastrarVM.Titulo))
-            {
+        foreach (var item in registros) {
+            if (item.Titulo.Equals(cadastrarVM.Titulo)) {
                 ModelState.AddModelError("CadastroUnico", "Já existe uma tarefa registrada com este título.");
                 break;
             }
@@ -62,14 +58,26 @@ public class TarefaController : Controller
 
         var entidade = cadastrarVM.ParaEntidade();
 
-        _repositorioTarefa.CadastrarRegistro(entidade);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.CadastrarRegistro(entidade);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet("editar/{id:guid}")]
-    public IActionResult Editar(Guid id)
-    {
+    public IActionResult Editar(Guid id) {
         var registroSelecionado = _repositorioTarefa.SelecionarRegistroPorId(id);
 
         if (registroSelecionado is null)
@@ -86,14 +94,11 @@ public class TarefaController : Controller
 
     [HttpPost("editar/{id:guid}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Editar(Guid id, EditarTarefaViewModel editarVM)
-    {
+    public IActionResult Editar(Guid id, EditarTarefaViewModel editarVM) {
         var registros = _repositorioTarefa.SelecionarRegistros();
 
-        foreach (var item in registros)
-        {
-            if (!item.Id.Equals(id) && item.Titulo.Equals(editarVM.Titulo))
-            {
+        foreach (var item in registros) {
+            if (!item.Id.Equals(id) && item.Titulo.Equals(editarVM.Titulo)) {
                 ModelState.AddModelError("CadastroUnico", "Já existe uma tarefa registrada com este título.");
                 break;
             }
@@ -104,14 +109,26 @@ public class TarefaController : Controller
 
         var registroEditado = editarVM.ParaEntidade();
 
-        _repositorioTarefa.EditarRegistro(id, registroEditado);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.EditarRegistro(id, registroEditado);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet("excluir/{id:guid}")]
-    public IActionResult Excluir(Guid id)
-    {
+    public IActionResult Excluir(Guid id) {
         var registroSelecionado = _repositorioTarefa.SelecionarRegistroPorId(id);
 
         if (registroSelecionado is null)
@@ -123,16 +140,27 @@ public class TarefaController : Controller
     }
 
     [HttpPost("excluir/{id:guid}")]
-    public IActionResult ExcluirConfirmado(Guid id)
-    {
-        _repositorioTarefa.ExcluirRegistro(id);
+    public IActionResult ExcluirConfirmado(Guid id) {
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.ExcluirRegistro(id);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+            
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost, Route("/tarefas/{id:guid}/alternar-status")]
-    public IActionResult AlternarStatus(Guid id)
-    {
+    public IActionResult AlternarStatus(Guid id) {
         var tarefaSelecionada = _repositorioTarefa.SelecionarRegistroPorId(id);
 
         if (tarefaSelecionada is null)
@@ -143,36 +171,60 @@ public class TarefaController : Controller
         else
             tarefaSelecionada.ConcluirTarefa();
 
-        _repositorioTarefa.EditarRegistro(id, tarefaSelecionada);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.EditarRegistro(id, tarefaSelecionada);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet, Route("/tarefas/{id:guid}/gerenciar-itens")]
-    public IActionResult GerenciarItens(Guid id)
-    {
+    public IActionResult GerenciarItens(Guid id) {
         var tarefaSelecionada = _repositorioTarefa.SelecionarRegistroPorId(id);
 
         if (tarefaSelecionada is null)
             return RedirectToAction(nameof(Index));
 
         var gerenciarItensViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
-        
+
 
         return View(gerenciarItensViewModel);
     }
 
     [HttpPost, Route("/tarefas/{id:guid}/adicionar-item")]
-    public IActionResult AdicionarItem(Guid id, string tituloItem)
-    {
+    public IActionResult AdicionarItem(Guid id, string tituloItem) {
         var tarefaSelecionada = _repositorioTarefa.SelecionarRegistroPorId(id);
-        
-        if(tarefaSelecionada is null)
+
+        if (tarefaSelecionada is null)
             return RedirectToAction(nameof(Index));
 
         var itemSelecionado = tarefaSelecionada.AdicionarItem(tituloItem);
 
-        _repositorioTarefa.AdicionarItem(itemSelecionado);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.AdicionarItem(itemSelecionado);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var gerenciarItensViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 
@@ -180,8 +232,7 @@ public class TarefaController : Controller
     }
 
     [HttpPost, Route("/tarefas/{idTarefa:guid}/alternar-status-item/{idItem:guid}")]
-    public IActionResult AlternarStatusItem(Guid idTarefa, Guid idItem)
-    {
+    public IActionResult AlternarStatusItem(Guid idTarefa, Guid idItem) {
         var tarefaSelecionada = _repositorioTarefa.SelecionarRegistroPorId(idTarefa);
 
         if (tarefaSelecionada is null)
@@ -197,7 +248,20 @@ public class TarefaController : Controller
         else
             tarefaSelecionada.MarcarItemPendente(itemSelecionado);
 
-        _repositorioTarefa.AtualizarItem(itemSelecionado);
+        var transacao = _dbContext.Database.BeginTransaction();
+
+        try {
+            _repositorioTarefa.AtualizarItem(itemSelecionado);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var gerenciarItensViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 
@@ -206,26 +270,36 @@ public class TarefaController : Controller
 
 
     [HttpPost, Route("/tarefas/{idTarefa:guid}/remover-item/{idItem:guid}")]
-    public IActionResult RemoverItem(Guid id, Guid idItem)
-    {
+    public IActionResult RemoverItem(Guid id, Guid idItem) {
         var tarefaSelecionada = _repositorioTarefa.SelecionarRegistroPorId(id);
 
-        if(tarefaSelecionada is null)
+        if (tarefaSelecionada is null)
             return RedirectToAction(nameof(Index));
 
         var itemSelecionado = tarefaSelecionada.ObterItem(idItem);
 
-        if(itemSelecionado is null)
+        if (itemSelecionado is null)
             return RedirectToAction(nameof(Index));
 
-        tarefaSelecionada.RemoverItem(itemSelecionado);
+        var transacao = _dbContext.Database.BeginTransaction();
 
-        _repositorioTarefa.RemoverItem(itemSelecionado);
+        try {
+            tarefaSelecionada.RemoverItem(itemSelecionado);
+
+            _repositorioTarefa.RemoverItem(itemSelecionado);
+
+            _dbContext.SaveChanges();
+
+            transacao.Commit();
+
+        } catch (Exception) {
+            transacao.Rollback();
+
+            throw;
+        }
 
         var gerenciarItenViewModel = new GerenciarItensTarefaViewModel(tarefaSelecionada);
 
         return View(nameof(GerenciarItens), gerenciarItenViewModel);
     }
-
-   
 }

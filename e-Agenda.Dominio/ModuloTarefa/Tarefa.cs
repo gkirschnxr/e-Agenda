@@ -38,13 +38,17 @@ namespace e_Agenda.Dominio.ModuloTarefa
             Titulo = titulo;
             Prioridade = prioridade;
             Concluida = false;
-            DataCriacao = DateTime.Now;
+            DataCriacao = DateTime.UtcNow;
         }
 
         public void ConcluirTarefa() 
         {
             Concluida = true;
-            DataConclusao = DateTime.Now;
+            DataConclusao = DateTime.UtcNow;
+
+            foreach (var item in Itens) {
+                item.Concluir();
+            }
         }
 
         public void MarcarPendente() 
@@ -62,7 +66,7 @@ namespace e_Agenda.Dominio.ModuloTarefa
 
             Itens.Add(item);
 
-            MarcarPendente();
+            AtualizarEstadoComBaseNosItens();
 
             return item;
         }
@@ -75,29 +79,42 @@ namespace e_Agenda.Dominio.ModuloTarefa
 
         public bool RemoverItem(ItemTarefa item)
         {
-            Itens.Remove(item);
+            var removido = Itens.Remove(item);
 
-            MarcarPendente();
+            AtualizarEstadoComBaseNosItens();
 
-            return true;
+            return removido;
         }
 
         public void ConcluirItem(ItemTarefa item)
         {
             item.Concluir();
+            AtualizarEstadoComBaseNosItens();
         }
 
         public void MarcarItemPendente(ItemTarefa item)
         {
             item.MarcarPendente();
 
-            MarcarPendente();
+            AtualizarEstadoComBaseNosItens();
         }
 
         public override void AtualizarRegistro(Tarefa registroEditado)
         {
             Titulo = registroEditado.Titulo;
             Prioridade = registroEditado.Prioridade;
-        }        
+        }
+
+        public void AtualizarEstadoComBaseNosItens() {
+
+            if (Itens.Count > 0 && Itens.All(i => i.Concluido)) {
+                Concluida = true;
+                DataConclusao ??= DateTime.UtcNow;
+            }
+            else {
+                Concluida = false;
+                DataConclusao = null;
+            }
+        }
     }
 }
